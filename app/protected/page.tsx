@@ -1,35 +1,84 @@
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/lib/supabase/server";
-import { InfoIcon } from "lucide-react";
-import { FetchDataSteps } from "@/components/tutorial/fetch-data-steps";
+import { DashboardStats } from "@/components/dashboard/dashboard-stats";
+import { DashboardWelcome } from "@/components/dashboard/dashboard-welcome";
+import { QuickActionsCard } from "@/components/dashboard/quick-actions-card";
+import { RecentTasksCard } from "@/components/dashboard/recent-tasks-card";
+import { NoTasksCard } from "@/components/dashboard/no-tasks-card";
+import { AISuggestCard } from "@/components/ai/ai-suggest-card";
+import { AIUsageStats } from "@/components/ai/ai-usage-stats";
+import { checkOnboardingStatus } from "@/app/actions/onboarding";
 
-export default async function ProtectedPage() {
+export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.getClaims();
-  if (error || !data?.claims) {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) {
     redirect("/auth/login");
   }
 
+  // Check if user needs onboarding
+  const { completed } = await checkOnboardingStatus(user.id);
+  if (!completed) {
+    redirect("/protected/onboarding");
+  }
+
+  // Fetch user's tasks
+  const { data: tasks } = await supabase
+    .from("tasks")
+    .select("*, task_categories(*)")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  // Calculate stats
+  const totalTasks = tasks?.length || 0;
+  const completedToday = tasks?.filter(task => {
+    const today = new Date().toDateString();
+    return task.last_completed_at && new Date(task.last_completed_at).toDateString() === today;
+  }).length || 0;
+
+  const activeTasks = tasks?.filter(task => task.is_active).length || 0;
+  const longestStreak = Math.max(...(tasks?.map(t => t.longest_streak || 0) || [0]));
+
+  // Calculate completion rate (completed today / active tasks)
+  const completionRate = activeTasks > 0 ? (completedToday / activeTasks) * 100 : 0;
+
   return (
-    <div className="flex-1 w-full flex flex-col gap-12">
-      <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          This is a protected page that you can only see as an authenticated
-          user
+    <div className="space-y-8">
+      {/* Welcome Header */}
+      <DashboardWelcome userName={user.user_metadata?.full_name} />
+
+      {/* Stats Grid */}
+      <DashboardStats
+        totalTasks={totalTasks}
+        completedToday={completedToday}
+        longestStreak={longestStreak}
+        completionRate={completionRate}
+      />
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content (Left - 2 columns) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Quick Actions */}
+          <QuickActionsCard />
+
+          {/* Recent Tasks Preview */}
+          {tasks && tasks.length > 0 ? (
+            <RecentTasksCard tasks={tasks} />
+          ) : (
+            <NoTasksCard />
+          )}
         </div>
-      </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          {JSON.stringify(data.claims, null, 2)}
-        </pre>
-      </div>
-      <div>
-        <h2 className="font-bold text-2xl mb-4">Next steps</h2>
-        <FetchDataSteps />
+
+        {/* Sidebar (Right - 1 column) */}
+        <div className="space-y-6">
+          {/* AI Suggestions */}
+          <AISuggestCard userId={user.id} />
+
+          {/* AI Usage Stats */}
+          <AIUsageStats userId={user.id} />
+        </div>
       </div>
     </div>
   );

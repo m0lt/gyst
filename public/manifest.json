@@ -1,0 +1,12 @@
+{
+  "name": "Gyst - Your Life, Organized",
+  "short_name": "Gyst",
+  "description": "Beautiful habit tracking with Art Nouveau design inspired by Alphonse Mucha",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#8B4789",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "categories": ["productivity", "lifestyle", "health"]
+}
