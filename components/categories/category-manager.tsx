@@ -17,6 +17,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { apiCreateCategory, apiUpdateCategory, apiDeleteCategory } from "@/lib/api/categories";
 import { useNotificationStore } from "@/lib/store/notification-store";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 interface Category {
   id: string;
@@ -45,6 +46,7 @@ const PRESET_COLORS = [
 ];
 
 export function CategoryManager({ categories, userId }: CategoryManagerProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { success, error: showError } = useNotificationStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -85,12 +87,15 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
         // Update existing category
         const result = await apiUpdateCategory(editingCategory.id, formData);
         if (result.success) {
-          success("Category updated", `${formData.name} has been updated`);
+          success(
+            t("settings.categories.categoryUpdated"),
+            t("settings.categories.categoryUpdatedDesc", { name: formData.name })
+          );
           setIsOpen(false);
           resetForm();
           router.refresh();
         } else {
-          showError("Failed to update category", result.error.message);
+          showError(t("settings.categories.updateFailed"), result.error.message);
         }
       } else {
         // Create new category
@@ -100,17 +105,20 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
           is_predefined: false,
         });
         if (result.success) {
-          success("Category created", `${formData.name} has been created`);
+          success(
+            t("settings.categories.categoryCreated"),
+            t("settings.categories.categoryCreatedDesc", { name: formData.name })
+          );
           setIsOpen(false);
           resetForm();
           router.refresh();
         } else {
-          showError("Failed to create category", result.error.message);
+          showError(t("settings.categories.createFailed"), result.error.message);
         }
       }
     } catch (err) {
       showError(
-        "Failed to save category",
+        t("settings.categories.saveFailed"),
         err instanceof Error ? err.message : undefined
       );
     } finally {
@@ -119,7 +127,7 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
   };
 
   const handleDelete = async (categoryId: string, categoryName: string) => {
-    if (!confirm(`Are you sure you want to delete "${categoryName}"?`)) {
+    if (!confirm(t("settings.categories.deleteConfirm", { name: categoryName }))) {
       return;
     }
 
@@ -127,14 +135,17 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
     try {
       const result = await apiDeleteCategory(categoryId);
       if (result.success) {
-        success("Category deleted", `${categoryName} has been deleted`);
+        success(
+          t("settings.categories.categoryDeleted"),
+          t("settings.categories.categoryDeletedDesc", { name: categoryName })
+        );
         router.refresh();
       } else {
-        showError("Failed to delete category", result.error.message);
+        showError(t("settings.categories.deleteFailed"), result.error.message);
       }
     } catch (err) {
       showError(
-        "Failed to delete category",
+        t("settings.categories.deleteFailed"),
         err instanceof Error ? err.message : undefined
       );
     } finally {
@@ -147,42 +158,42 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-display font-semibold text-lg">Your Categories</h3>
+        <h3 className="font-display font-semibold text-lg">{t("settings.categories.yourCategories")}</h3>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2" onClick={resetForm}>
               <Plus className="h-4 w-4" />
-              New Category
+              {t("settings.categories.newCategory")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editingCategory ? "Edit Category" : "Create Category"}
+                {editingCategory ? t("settings.categories.editCategory") : t("settings.categories.createCategory")}
               </DialogTitle>
               <DialogDescription>
                 {editingCategory
-                  ? "Update your custom category"
-                  : "Add a new custom category for your tasks"}
+                  ? t("settings.categories.updateDesc")
+                  : t("settings.categories.createDesc")}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t("settings.categories.name")}</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    placeholder="e.g., Hobbies"
+                    placeholder={t("settings.categories.namePlaceholder")}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Color</Label>
+                  <Label>{t("settings.categories.color")}</Label>
                   <div className="grid grid-cols-5 gap-2">
                     {PRESET_COLORS.map((color) => (
                       <button
@@ -205,7 +216,7 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
               </div>
               <DialogFooter>
                 <Button type="submit" disabled={isLoading}>
-                  {editingCategory ? "Update" : "Create"}
+                  {editingCategory ? t("settings.categories.update") : t("settings.categories.create")}
                 </Button>
               </DialogFooter>
             </form>
@@ -215,7 +226,7 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
 
       {customCategories.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-8">
-          No custom categories yet. Create one to get started!
+          {t("settings.categories.noCategories")}
         </p>
       ) : (
         <div className="space-y-2">

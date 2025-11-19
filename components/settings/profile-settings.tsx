@@ -57,13 +57,13 @@ export function ProfileSettings({ userId, profile, onUpdateProfile, onUploadAvat
 
     // Check file size (max 5MB before cropping)
     if (file.size > 5 * 1024 * 1024) {
-      alert("File size must be less than 5MB");
+      alert(t("settings.profile.fileTooLarge"));
       return;
     }
 
     // Check file type
     if (!file.type.startsWith("image/")) {
-      alert("File must be an image");
+      alert(t("settings.profile.fileNotImage"));
       return;
     }
 
@@ -90,7 +90,7 @@ export function ProfileSettings({ userId, profile, onUpdateProfile, onUploadAvat
       setSelectedImageUrl("");
     } catch (error) {
       console.error("Failed to upload avatar:", error);
-      alert("Failed to upload avatar");
+      alert(t("settings.profile.uploadFailed"));
     } finally {
       setUploadingAvatar(false);
     }

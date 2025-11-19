@@ -7,20 +7,26 @@ import {
   LayoutDashboard,
   CheckSquare,
   BarChart3,
-  Settings,
   Sparkles,
   X,
   Bell,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { SidebarUserMenu } from "@/components/sidebar-user-menu";
 
 interface AppSidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  user?: {
+    id: string;
+    email: string;
+    avatar_url?: string | null;
+    full_name?: string | null;
+  };
 }
 
-export function AppSidebar({ isOpen = false, onClose }: AppSidebarProps) {
+export function AppSidebar({ isOpen = false, onClose, user }: AppSidebarProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
 
@@ -44,11 +50,6 @@ export function AppSidebar({ isOpen = false, onClose }: AppSidebarProps) {
       name: t("navigation.notifications"),
       href: "/protected/notifications",
       icon: Bell,
-    },
-    {
-      name: t("navigation.settings"),
-      href: "/protected/settings",
-      icon: Settings,
     },
   ];
 
@@ -132,12 +133,12 @@ export function AppSidebar({ isOpen = false, onClose }: AppSidebarProps) {
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="flex-shrink-0 border-t border-border/30 p-4">
-          <p className="text-xs text-muted-foreground text-center">
-            {t("navigation.footer")}
-          </p>
-        </div>
+        {/* User Menu */}
+        {user && (
+          <div className="flex-shrink-0 border-t border-border/30 p-4">
+            <SidebarUserMenu user={user} onLinkClick={handleLinkClick} />
+          </div>
+        )}
       </div>
       </aside>
     </>

@@ -375,6 +375,76 @@ notifications/spec.md
 
 ## Best Practices
 
+### Internationalization (i18n)
+**CRITICAL**: All user-facing text MUST use i18n translation keys.
+
+**Requirements**:
+- Never hardcode user-facing strings in components
+- Always use `t("translation.key")` from `react-i18next`
+- Update both `lib/i18n/locales/en.json` AND `lib/i18n/locales/de.json` for every text change
+- Use descriptive, hierarchical translation keys (e.g., `settings.notifications.channels.title`)
+- Include `useTranslation()` hook in all client components with user-facing text
+
+**When making frontend changes**:
+1. Identify all user-facing text (labels, buttons, messages, descriptions)
+2. Create translation keys in both `en.json` and `de.json`
+3. Replace hardcoded strings with `t("key")` calls
+4. Verify both languages render correctly
+
+**Translation key structure**:
+```typescript
+// WRONG - hardcoded text
+<button>Save Changes</button>
+<p>Select your preferences</p>
+
+// CORRECT - using i18n
+const { t } = useTranslation();
+<button>{t("common.save")}</button>
+<p>{t("settings.selectPreferences")}</p>
+```
+
+**Translation file organization**:
+- Group by feature: `settings.*`, `tasks.*`, `notifications.*`
+- Use nested objects for related keys
+- Keep English and German files synchronized
+- Use interpolation for dynamic values: `t("message", { name: userName })`
+
+### Database Management (Supabase)
+**CRITICAL**: Always use Supabase MCP tools for database operations. Never use Docker or local Supabase CLI.
+
+**Requirements**:
+- Use `mcp__supabase__apply_migration` for all database schema changes
+- Use `mcp__supabase__execute_sql` for data queries and operations
+- Use `mcp__supabase__list_tables` to inspect database structure
+- Never use `npx supabase db reset --local` or Docker commands
+- All migrations must be applied through MCP tools
+
+**When making database changes**:
+1. Create migration file in `supabase/migrations/` with format `YYYYMMDDHHMMSS_description.sql`
+2. Write SQL migration (CREATE, ALTER, etc.)
+3. Apply migration using `mcp__supabase__apply_migration` with project_id, name, and query
+4. Verify migration success
+5. Update TypeScript types if schema changed
+
+**Example workflow**:
+```typescript
+// 1. Create migration file: supabase/migrations/20251119000001_add_feature.sql
+// 2. Apply via MCP:
+mcp__supabase__apply_migration({
+  project_id: "fjfswufsvfdrrotvmajv",
+  name: "add_feature",
+  query: "ALTER TABLE tasks ADD COLUMN new_field TEXT;"
+})
+// 3. Update database.types.ts if needed
+```
+
+**Available Supabase MCP tools**:
+- `mcp__supabase__list_projects` - List all projects
+- `mcp__supabase__list_tables` - List database tables
+- `mcp__supabase__apply_migration` - Apply schema migrations
+- `mcp__supabase__execute_sql` - Execute SQL queries
+- `mcp__supabase__get_advisors` - Check for security/performance issues
+
 ### Simplicity First
 - Default to <100 lines of new code
 - Single-file implementations until proven insufficient

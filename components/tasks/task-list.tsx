@@ -4,7 +4,8 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Check, Flame, Trash2, Play, Pause, ListTodo } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Check, Flame, Trash2, Play, Pause, ListTodo, Clock, Timer, Tag, Pencil } from "lucide-react";
 import { completeTask, deleteTask, toggleTaskActive } from "@/app/actions/tasks";
 import { useRouter } from "next/navigation";
 import { useTaskStore } from "@/lib/store/task-store";
@@ -12,7 +13,9 @@ import { useNotificationStore } from "@/lib/store/notification-store";
 import { TaskSearch } from "./task-search";
 import { TaskFilters } from "./task-filters";
 import { TaskBulkActions } from "./task-bulk-actions";
+import { TaskFormModal } from "./task-form-modal";
 import { EmptyState } from "@/components/empty-states/empty-state";
+import { ArtNouveauPlaceholder } from "@/components/ornaments/art-nouveau-placeholder";
 import { useTranslation } from "react-i18next";
 
 type Task = {
@@ -21,10 +24,19 @@ type Task = {
   description: string | null;
   frequency: "daily" | "weekly" | "custom";
   category_id: string;
+  user_id: string;
   current_streak: number | null;
   longest_streak: number | null;
   last_completed_at: string | null;
   is_active: boolean;
+  priority: "low" | "medium" | "high";
+  scheduled_duration: number | null;
+  tags: string[];
+  reminder_minutes_before: number | null;
+  preferred_time: string | null;
+  recurrence_pattern: any;
+  ai_image_url: string | null;
+  ai_image_prompt: string | null;
   task_categories: {
     id: string;
     name: string;
@@ -47,6 +59,8 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { filter, selectedTaskIds, toggleTaskSelection, clearFilter } = useTaskStore();
   const { success, error } = useNotificationStore();
 
@@ -131,6 +145,11 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
     }
   };
 
+  const handleEdit = (task: Task) => {
+    setEditingTask(task);
+    setIsEditModalOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Search and Filters */}
@@ -208,6 +227,19 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                         className="mt-1"
                       />
 
+                      {/* AI Image or Placeholder */}
+                      <div className="flex-shrink-0">
+                        {task.ai_image_url ? (
+                          <img
+                            src={task.ai_image_url}
+                            alt={task.title}
+                            className="w-16 h-16 rounded-lg object-cover border-2 border-primary/20"
+                          />
+                        ) : (
+                          <ArtNouveauPlaceholder className="w-16 h-16 rounded-lg" />
+                        )}
+                      </div>
+
                       {/* Task Info */}
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-3">
@@ -233,18 +265,67 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                           </p>
                         )}
 
-                        <div className="flex items-center gap-4 pl-6 text-xs text-muted-foreground">
-                          <span>{t(`tasks.${task.frequency}`)}</span>
-                          <span>•</span>
-                          <span>{task.task_categories?.name}</span>
+                        <div className="flex flex-wrap items-center gap-3 pl-6">
+                          {/* Priority Badge */}
+                          <Badge
+                            variant={
+                              task.priority === "high"
+                                ? "destructive"
+                                : task.priority === "medium"
+                                ? "default"
+                                : "secondary"
+                            }
+                            className="text-xs"
+                          >
+                            {t(`tasks.priority.${task.priority}`)}
+                          </Badge>
+
+                          {/* Frequency & Category */}
+                          <span className="text-xs text-muted-foreground">
+                            {t(`tasks.${task.frequency}`)} • {task.task_categories?.name}
+                          </span>
+
+                          {/* Time */}
+                          {task.preferred_time && (
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Clock className="h-3 w-3" />
+                              {task.preferred_time}
+                            </span>
+                          )}
+
+                          {/* Duration */}
+                          {task.scheduled_duration && (
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Timer className="h-3 w-3" />
+                              {t("tasks.scheduling.durationMinutes", { count: task.scheduled_duration })}
+                            </span>
+                          )}
+
+                          {/* Streak */}
                           {task.current_streak && task.current_streak > 0 && (
-                            <>
-                              <span>•</span>
-                              <span className="flex items-center gap-1 text-accent-foreground">
-                                <Flame className="h-3 w-3" />
-                                {task.current_streak} {t("tasks.dayStreak")}
-                              </span>
-                            </>
+                            <span className="flex items-center gap-1 text-xs text-accent-foreground">
+                              <Flame className="h-3 w-3" />
+                              {task.current_streak} {t("tasks.dayStreak")}
+                            </span>
+                          )}
+
+                          {/* Tags */}
+                          {task.tags && task.tags.length > 0 && (
+                            <div className="flex items-center gap-1">
+                              <Tag className="h-3 w-3 text-muted-foreground" />
+                              <div className="flex gap-1">
+                                {task.tags.slice(0, 3).map((tag) => (
+                                  <Badge key={tag} variant="outline" className="text-xs">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                                {task.tags.length > 3 && (
+                                  <Badge variant="outline" className="text-xs">
+                                    +{task.tags.length - 3}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -263,6 +344,15 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                             {isCompletedToday ? t("tasks.done") : t("tasks.complete")}
                           </Button>
                         )}
+
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(task)}
+                          disabled={isLoading === task.id}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
 
                         <Button
                           size="sm"
@@ -294,6 +384,18 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Task Modal */}
+      <TaskFormModal
+        categories={categories}
+        userId={editingTask?.user_id || ""}
+        existingTask={editingTask || undefined}
+        open={isEditModalOpen}
+        onOpenChange={(open) => {
+          setIsEditModalOpen(open);
+          if (!open) setEditingTask(null);
+        }}
+      />
     </div>
   );
 }

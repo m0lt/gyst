@@ -14,7 +14,9 @@
     "finish": "Fertig",
     "close": "Schließen",
     "activate": "Aktivieren",
-    "pause": "Pausieren"
+    "pause": "Pausieren",
+    "unit": "Einheit",
+    "months": "Monate"
   },
   "auth": {
     "signIn": "Anmelden",
@@ -95,9 +97,14 @@
     "tasksFound_plural": "{{count}} Aufgaben gefunden",
     "deleteConfirm": "Möchtest du diese Aufgabe wirklich löschen?",
     "creating": "Erstelle...",
+    "updating": "Aktualisiere...",
     "createTask": "Aufgabe erstellen",
+    "createTaskDescription": "Füge eine neue Aufgabe hinzu, um deine Routine zu organisieren",
+    "editTaskDescription": "Aktualisiere deine Aufgabendetails und Zeitplan",
     "taskCreated": "Aufgabe erstellt!",
     "taskCreatedDesc": "\"{{title}}\" wurde zu deinen Aufgaben hinzugefügt.",
+    "taskUpdated": "Aufgabe aktualisiert!",
+    "taskUpdatedDesc": "\"{{title}}\" wurde aktualisiert.",
     "taskCompleted": "Aufgabe erledigt!",
     "taskCompletedDesc": "Großartige Arbeit! Mach weiter so.",
     "taskDeleted": "Aufgabe gelöscht",
@@ -125,7 +132,99 @@
     "bulkDeleteSuccessMsg": "{{count}} Aufgaben erfolgreich gelöscht",
     "bulkDeleteError": "Fehler beim Löschen der Aufgaben",
     "bulkDeleteErrorMsg": "{{failed}} von {{total}} Aufgaben fehlgeschlagen",
-    "bulkDeleteConfirm": "Möchtest du wirklich {{count}} Aufgaben löschen?"
+    "bulkDeleteConfirm": "Möchtest du wirklich {{count}} Aufgaben löschen?",
+    "scheduling": {
+      "title": "Planung",
+      "frequencyAndSchedule": "Häufigkeit & Zeitplan",
+      "timeAndDuration": "Zeit & Dauer",
+      "weekdaysOptional": "Bestimmte Tage (optional)",
+      "time": "Uhrzeit",
+      "timePlaceholder": "Uhrzeit wählen",
+      "duration": "Dauer",
+      "durationPlaceholder": "z.B. 30",
+      "durationMinutes": "{{count}} Min",
+      "durationHours": "{{hours}}h {{minutes}}Min",
+      "priority": "Priorität",
+      "tags": "Tags",
+      "tagsPlaceholder": "Tags hinzufügen...",
+      "reminder": "Erinnerung",
+      "reminderNone": "Keine Erinnerung",
+      "recurrence": "Wiederholung",
+      "recurrencePattern": "Wiederholungsmuster"
+    },
+    "priority": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch",
+      "lowDesc": "Kann warten",
+      "mediumDesc": "Normale Wichtigkeit",
+      "highDesc": "Dringend"
+    },
+    "recurrence": {
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich",
+      "custom": "Benutzerdefiniert",
+      "weekdaysOnly": "Nur Werktage",
+      "selectDays": "Tage auswählen",
+      "selectDates": "Daten auswählen",
+      "everyNDays": "Alle {{n}} Tage",
+      "everyNWeeks": "Alle {{n}} Wochen",
+      "interval": "Intervall",
+      "days": "Tage",
+      "weeks": "Wochen"
+    },
+    "reminder": {
+      "5min": "5 Minuten vorher",
+      "15min": "15 Minuten vorher",
+      "30min": "30 Minuten vorher",
+      "1hour": "1 Stunde vorher",
+      "2hours": "2 Stunden vorher",
+      "1day": "1 Tag vorher"
+    },
+    "daysOfWeek": {
+      "sunday": "Sonntag",
+      "monday": "Montag",
+      "tuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sun": "So",
+      "mon": "Mo",
+      "tue": "Di",
+      "wed": "Mi",
+      "thu": "Do",
+      "fri": "Fr",
+      "sat": "Sa"
+    },
+    "modal": {
+      "newTask": "Neue Aufgabe",
+      "editTask": "Aufgabe bearbeiten",
+      "close": "Schließen",
+      "basicInfo": "Grundinformationen",
+      "schedulingOptions": "Planungsoptionen",
+      "additionalOptions": "Weitere Optionen"
+    },
+    "ai": {
+      "artImage": "Jugendstil-Bild",
+      "generate": "KI-Bild generieren",
+      "generating": "Generiere...",
+      "regenerate": "Bild neu generieren",
+      "regenerating": "Generiere neu...",
+      "noImage": "Noch kein KI-Bild vorhanden. Generiere eines, um deine Aufgabe im Jugendstil zu visualisieren.",
+      "saveFirstToGenerate": "Speichere die Aufgabe zuerst, dann kannst du ein KI-Bild generieren.",
+      "imageGenerated": "Bild generiert!",
+      "imageGeneratedDesc": "Deine Aufgabe hat jetzt ein wunderschönes Jugendstil-Bild.",
+      "imageDeleted": "Bild gelöscht",
+      "imageDeletedDesc": "Das KI-Bild wurde entfernt.",
+      "generationFailed": "Bildgenerierung fehlgeschlagen",
+      "deletionFailed": "Löschen des Bildes fehlgeschlagen",
+      "titleRequired": "Titel erforderlich",
+      "titleRequiredDesc": "Bitte gib einen Aufgabentitel ein, bevor du ein Bild generierst.",
+      "saveFirst": "Aufgabe zuerst speichern",
+      "saveFirstDesc": "Bitte speichere die Aufgabe, bevor du ein KI-Bild generierst."
+    }
   },
   "categories": {
     "health": "Gesundheit",
@@ -140,17 +239,16 @@
     "light": "Hell",
     "dark": "Dunkel",
     "system": "System",
-    "palette": "Mucha Palette",
+    "palette": "Farbpalette",
     "classic": "Klassisch",
-    "classicDesc": "Mauve & Gold - Inspiriert von Art Nouveau Plakaten",
+    "classicDesc": "Mauve & Gold",
     "emerald": "Smaragd",
-    "emeraldDesc": "Natur & Frühling - Inspiriert von botanischen Gemälden",
+    "emeraldDesc": "Natur & Frühling",
     "ruby": "Rubin",
-    "rubyDesc": "Herbst & Leidenschaft - Inspiriert von warmen Jahreszeiten"
+    "rubyDesc": "Herbst & Leidenschaft"
   },
   "footer": {
-    "poweredBy": "Powered by",
-    "designedWith": "Gestaltet mit Art Nouveau Ästhetik inspiriert von Alphonse Mucha"
+    "poweredBy": "Powered by"
   },
   "settings": {
     "title": "Einstellungen",
@@ -167,7 +265,10 @@
       "maxSize": "Max 5MB, JPG oder PNG",
       "saveProfile": "Profil speichern",
       "saving": "Speichert...",
-      "saved": "Gespeichert!"
+      "saved": "Gespeichert!",
+      "fileTooLarge": "Dateigröße muss kleiner als 5MB sein",
+      "fileNotImage": "Datei muss ein Bild sein",
+      "uploadFailed": "Fehler beim Hochladen des Avatars"
     },
     "theme": {
       "title": "Theme",
@@ -200,7 +301,9 @@
       "allPreferences": "Alle deine Präferenzen und Einstellungen",
       "cannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden.",
       "cancel": "Abbrechen",
-      "confirmDeleteButton": "Ja, mein Konto löschen"
+      "confirmDeleteButton": "Ja, mein Konto löschen",
+      "typeDeleteError": "Bitte tippe DELETE zum Bestätigen",
+      "deleteFailed": "Fehler beim Löschen des Kontos"
     },
     "notifications": {
       "title": "Benachrichtigungseinstellungen",
@@ -221,10 +324,86 @@
       "generatePreview": "Vorschau generieren",
       "generating": "Generiert...",
       "previewTitle": "Wöchentliche Zusammenfassung Vorschau",
-      "close": "Schließen"
+      "close": "Schließen",
+      "digest": {
+        "title": "Wöchentliche Zusammenfassung Vorschau",
+        "button": "Vorschau Zusammenfassung",
+        "description": "Sieh dir an wie deine wöchentliche Zusammenfassungs-E-Mail aussehen wird. Diese Vorschau zeigt Daten der letzten 7 Tage.",
+        "yourWeeklyProgress": "Dein wöchentlicher Fortschritt",
+        "weekSummary": "Wochenzusammenfassung",
+        "completed": "Erledigt",
+        "rate": "Quote",
+        "longestStreak": "Längste Serie",
+        "totalTasks": "Gesamt Aufgaben",
+        "topCategories": "Top Kategorien",
+        "completedBadge": "erledigt",
+        "comingUp": "Anstehend",
+        "keepUpGreatWork": "Weiter so! 🎉",
+        "previewInfo": "Dies ist eine Vorschau deiner wöchentlichen Zusammenfassungs-E-Mail.",
+        "emailSchedule": "E-Mails werden jeden Sonntag um 18 Uhr versendet."
+      },
+      "browserPushTitle": "Browser Push-Benachrichtigungen",
+      "browserPushDesc": "Aktiviere Push-Benachrichtigungen um sofortige Benachrichtigungen in deinem Browser zu erhalten",
+      "channels": {
+        "title": "Benachrichtigungskanäle",
+        "emailTitle": "E-Mail-Benachrichtigungen",
+        "emailDesc": "Erhalte Aufgabenerinnerungen und wöchentliche Zusammenfassungen per E-Mail",
+        "pushTitle": "Push-Benachrichtigungen",
+        "pushDesc": "Erhalte sofortige Benachrichtigungen auf deinem Gerät",
+        "digestTitle": "Wöchentliche Zusammenfassung",
+        "digestDesc": "Erhalte jeden Sonntag eine wöchentliche Zusammenfassung deines Fortschritts"
+      },
+      "timing": {
+        "title": "Zeitplanung & Häufigkeit",
+        "maxPerDay": "Max. Benachrichtigungen pro Tag",
+        "maxPerDayDesc": "Begrenze Benachrichtigungen um Überforderung zu vermeiden (1-20)",
+        "quietStart": "Ruhezeit Start",
+        "quietEnd": "Ruhezeit Ende",
+        "quietHoursDesc": "Während der Ruhezeit werden keine Benachrichtigungen gesendet"
+      },
+      "tone": {
+        "title": "Benachrichtigungston",
+        "description": "Wähle welche Töne in deiner Benachrichtigungsprogression verwendet werden. Der Ton wird intensiver wenn du eine Aufgabe nicht erledigst.",
+        "encouraging": "Ermutigend 🎉",
+        "encouragingDesc": "Positiv und unterstützend",
+        "neutral": "Neutral 📋",
+        "neutralDesc": "Einfach und sachlich",
+        "pushy": "Drängend 🔥",
+        "pushyDesc": "Dringend und direkt",
+        "currentProgression": "Aktuelle Progression:",
+        "noneSelected": "Keine ausgewählt"
+      },
+      "saveChanges": "Änderungen speichern",
+      "saving": "Speichert...",
+      "saved": "Gespeichert!"
     },
     "categories": {
-      "title": "Kategorien"
+      "title": "Kategorien",
+      "yourCategories": "Deine Kategorien",
+      "newCategory": "Neue Kategorie",
+      "editCategory": "Kategorie bearbeiten",
+      "createCategory": "Kategorie erstellen",
+      "updateDesc": "Aktualisiere deine eigene Kategorie",
+      "createDesc": "Füge eine neue eigene Kategorie für deine Aufgaben hinzu",
+      "name": "Name",
+      "namePlaceholder": "z.B. Hobbys",
+      "color": "Farbe",
+      "update": "Aktualisieren",
+      "create": "Erstellen",
+      "noCategories": "Noch keine eigenen Kategorien. Erstelle eine um loszulegen!",
+      "predefinedTitle": "Vordefinierte Kategorien",
+      "predefinedDesc": "Systemkategorien die helfen deine Aufgaben zu organisieren",
+      "categoryUpdated": "Kategorie aktualisiert",
+      "categoryUpdatedDesc": "{{name}} wurde aktualisiert",
+      "categoryCreated": "Kategorie erstellt",
+      "categoryCreatedDesc": "{{name}} wurde erstellt",
+      "categoryDeleted": "Kategorie gelöscht",
+      "categoryDeletedDesc": "{{name}} wurde gelöscht",
+      "deleteConfirm": "Bist du sicher, dass du \"{{name}}\" löschen möchtest?",
+      "updateFailed": "Fehler beim Aktualisieren der Kategorie",
+      "createFailed": "Fehler beim Erstellen der Kategorie",
+      "deleteFailed": "Fehler beim Löschen der Kategorie",
+      "saveFailed": "Fehler beim Speichern der Kategorie"
     },
     "nav": {
       "profile": "Profil",
@@ -242,8 +421,7 @@
     "notifications": "Benachrichtigungen",
     "settings": "Einstellungen",
     "logo": "Gyst",
-    "beta": "BETA",
-    "footer": "Art Nouveau Design"
+    "beta": "BETA"
   },
   "ai": {
     "suggestions": "KI-Aufgabenvorschläge",

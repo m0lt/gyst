@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TaskList } from "@/components/tasks/task-list";
 import { TasksHeader } from "@/components/tasks/tasks-header";
-import { CreateTaskCard } from "@/components/tasks/create-task-card";
+import { TaskFormModal } from "@/components/tasks/task-form-modal";
 
 export default async function TasksPage() {
   const supabase = await createClient();
@@ -27,20 +27,14 @@ export default async function TasksPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <TasksHeader />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Task Creation Form */}
-        <div className="lg:col-span-1">
-          <CreateTaskCard categories={categories || []} userId={user.id} />
-        </div>
-
-        {/* Task List */}
-        <div className="lg:col-span-2">
-          <TaskList tasks={tasks || []} categories={categories || []} />
-        </div>
+      {/* Header with New Task Button */}
+      <div className="flex items-center justify-between">
+        <TasksHeader />
+        <TaskFormModal categories={categories || []} userId={user.id} />
       </div>
+
+      {/* Task List */}
+      <TaskList tasks={tasks || []} categories={categories || []} />
     </div>
   );
 }

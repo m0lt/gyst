@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import type { TaskPriority, RecurrencePattern } from "@/lib/types/task-scheduling";
 
 type CreateTaskInput = {
   title: string;
@@ -9,10 +10,32 @@ type CreateTaskInput = {
   category_id: string;
   frequency: "daily" | "weekly" | "custom";
   user_id: string;
+  // Enhanced scheduling fields
+  priority?: TaskPriority;
+  scheduled_duration?: number | null;
+  tags?: string[];
+  reminder_minutes_before?: number | null;
+  preferred_time?: string | null;
+  recurrence_pattern?: RecurrencePattern | null;
+};
+
+type UpdateTaskInput = Partial<Omit<CreateTaskInput, 'user_id'>> & {
+  id: string;
 };
 
 export async function createTask(input: CreateTaskInput) {
   const supabase = await createClient();
+
+  // Validate inputs
+  if (input.scheduled_duration && input.scheduled_duration <= 0) {
+    throw new Error("Scheduled duration must be greater than 0");
+  }
+  if (input.reminder_minutes_before && input.reminder_minutes_before < 0) {
+    throw new Error("Reminder minutes must be >= 0");
+  }
+
+  // Normalize tags to lowercase
+  const normalizedTags = input.tags?.map(tag => tag.toLowerCase()) || [];
 
   const { data, error } = await supabase
     .from("tasks")
@@ -23,6 +46,13 @@ export async function createTask(input: CreateTaskInput) {
       frequency: input.frequency,
       user_id: input.user_id,
       is_active: true,
+      // Enhanced scheduling fields
+      priority: input.priority || 'medium',
+      scheduled_duration: input.scheduled_duration || null,
+      tags: normalizedTags,
+      reminder_minutes_before: input.reminder_minutes_before || null,
+      preferred_time: input.preferred_time || null,
+      recurrence_pattern: input.recurrence_pattern || null,
     })
     .select()
     .single();
@@ -30,6 +60,49 @@ export async function createTask(input: CreateTaskInput) {
   if (error) {
     console.error("Error creating task:", error);
     throw new Error(error.message || "Failed to create task");
+  }
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected");
+  return data;
+}
+
+export async function updateTask(input: UpdateTaskInput) {
+  const supabase = await createClient();
+
+  // Validate inputs
+  if (input.scheduled_duration !== undefined && input.scheduled_duration !== null && input.scheduled_duration <= 0) {
+    throw new Error("Scheduled duration must be greater than 0");
+  }
+  if (input.reminder_minutes_before !== undefined && input.reminder_minutes_before !== null && input.reminder_minutes_before < 0) {
+    throw new Error("Reminder minutes must be >= 0");
+  }
+
+  // Normalize tags to lowercase if provided
+  const normalizedTags = input.tags?.map(tag => tag.toLowerCase());
+
+  const updateData: any = {};
+  if (input.title !== undefined) updateData.title = input.title;
+  if (input.description !== undefined) updateData.description = input.description || null;
+  if (input.category_id !== undefined) updateData.category_id = input.category_id;
+  if (input.frequency !== undefined) updateData.frequency = input.frequency;
+  if (input.priority !== undefined) updateData.priority = input.priority;
+  if (input.scheduled_duration !== undefined) updateData.scheduled_duration = input.scheduled_duration;
+  if (normalizedTags !== undefined) updateData.tags = normalizedTags;
+  if (input.reminder_minutes_before !== undefined) updateData.reminder_minutes_before = input.reminder_minutes_before;
+  if (input.preferred_time !== undefined) updateData.preferred_time = input.preferred_time;
+  if (input.recurrence_pattern !== undefined) updateData.recurrence_pattern = input.recurrence_pattern;
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .update(updateData)
+    .eq("id", input.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating task:", error);
+    throw new Error(error.message || "Failed to update task");
   }
 
   revalidatePath("/protected/tasks");

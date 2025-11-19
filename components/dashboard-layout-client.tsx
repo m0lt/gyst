@@ -8,15 +8,25 @@ import { Button } from "@/components/ui/button";
 interface DashboardLayoutClientProps {
   children: React.ReactNode;
   headerActions?: React.ReactNode;
+  user?: {
+    id: string;
+    email: string;
+    avatar_url?: string | null;
+    full_name?: string | null;
+  };
 }
 
-export function DashboardLayoutClient({ children, headerActions }: DashboardLayoutClientProps) {
+export function DashboardLayoutClient({ children, headerActions, user }: DashboardLayoutClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-organic-pattern">
       {/* Sidebar */}
-      <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <AppSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        user={user}
+      />
 
       {/* Main Content with Sidebar Offset */}
       <div className="md:pl-64">
@@ -61,8 +71,6 @@ export function DashboardLayoutClient({ children, headerActions }: DashboardLayo
               >
                 Supabase
               </a>
-              {" • "}
-              Designed with Art Nouveau aesthetics inspired by Alphonse Mucha
             </p>
           </div>
         </footer>

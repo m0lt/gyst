@@ -14,7 +14,9 @@
     "finish": "Finish",
     "close": "Close",
     "activate": "Activate",
-    "pause": "Pause"
+    "pause": "Pause",
+    "unit": "Unit",
+    "months": "months"
   },
   "auth": {
     "signIn": "Sign In",
@@ -95,9 +97,14 @@
     "tasksFound_plural": "{{count}} tasks found",
     "deleteConfirm": "Are you sure you want to delete this task?",
     "creating": "Creating...",
+    "updating": "Updating...",
     "createTask": "Create Task",
+    "createTaskDescription": "Add a new task to organize your routine",
+    "editTaskDescription": "Update your task details and schedule",
     "taskCreated": "Task created!",
     "taskCreatedDesc": "\"{{title}}\" has been added to your tasks.",
+    "taskUpdated": "Task updated!",
+    "taskUpdatedDesc": "\"{{title}}\" has been updated.",
     "taskCompleted": "Task completed!",
     "taskCompletedDesc": "Great job! Keep up the good work.",
     "taskDeleted": "Task deleted",
@@ -125,7 +132,99 @@
     "bulkDeleteSuccessMsg": "{{count}} tasks deleted successfully",
     "bulkDeleteError": "Failed to delete tasks",
     "bulkDeleteErrorMsg": "{{failed}} of {{total}} tasks failed",
-    "bulkDeleteConfirm": "Are you sure you want to delete {{count}} tasks?"
+    "bulkDeleteConfirm": "Are you sure you want to delete {{count}} tasks?",
+    "scheduling": {
+      "title": "Scheduling",
+      "frequencyAndSchedule": "Frequency & Schedule",
+      "timeAndDuration": "Time & Duration",
+      "weekdaysOptional": "Specific Days (optional)",
+      "time": "Time",
+      "timePlaceholder": "Select time",
+      "duration": "Duration",
+      "durationPlaceholder": "e.g., 30",
+      "durationMinutes": "{{count}} min",
+      "durationHours": "{{hours}}h {{minutes}}min",
+      "priority": "Priority",
+      "tags": "Tags",
+      "tagsPlaceholder": "Add tags...",
+      "reminder": "Reminder",
+      "reminderNone": "No reminder",
+      "recurrence": "Recurrence",
+      "recurrencePattern": "Recurrence Pattern"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "lowDesc": "Can wait",
+      "mediumDesc": "Normal importance",
+      "highDesc": "Urgent"
+    },
+    "recurrence": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "custom": "Custom",
+      "weekdaysOnly": "Weekdays only",
+      "selectDays": "Select days",
+      "selectDates": "Select dates",
+      "everyNDays": "Every {{n}} days",
+      "everyNWeeks": "Every {{n}} weeks",
+      "interval": "Interval",
+      "days": "days",
+      "weeks": "weeks"
+    },
+    "reminder": {
+      "5min": "5 minutes before",
+      "15min": "15 minutes before",
+      "30min": "30 minutes before",
+      "1hour": "1 hour before",
+      "2hours": "2 hours before",
+      "1day": "1 day before"
+    },
+    "daysOfWeek": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "modal": {
+      "newTask": "New Task",
+      "editTask": "Edit Task",
+      "close": "Close",
+      "basicInfo": "Basic Information",
+      "schedulingOptions": "Scheduling Options",
+      "additionalOptions": "Additional Options"
+    },
+    "ai": {
+      "artImage": "Art Nouveau Image",
+      "generate": "Generate AI Image",
+      "generating": "Generating...",
+      "regenerate": "Regenerate Image",
+      "regenerating": "Regenerating...",
+      "noImage": "No AI image yet. Generate one to visualize your task in Art Nouveau style.",
+      "saveFirstToGenerate": "Save the task first, then you can generate an AI image.",
+      "imageGenerated": "Image generated!",
+      "imageGeneratedDesc": "Your task now has a beautiful Art Nouveau image.",
+      "imageDeleted": "Image deleted",
+      "imageDeletedDesc": "The AI image has been removed.",
+      "generationFailed": "Image generation failed",
+      "deletionFailed": "Failed to delete image",
+      "titleRequired": "Title required",
+      "titleRequiredDesc": "Please enter a task title before generating an image.",
+      "saveFirst": "Save task first",
+      "saveFirstDesc": "Please save the task before generating an AI image."
+    }
   },
   "categories": {
     "health": "Health",
@@ -140,17 +239,16 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System",
-    "palette": "Mucha Palette",
+    "palette": "Color Palette",
     "classic": "Classic",
-    "classicDesc": "Mauve & Gold - Inspired by Art Nouveau posters",
+    "classicDesc": "Mauve & Gold",
     "emerald": "Emerald",
-    "emeraldDesc": "Nature & Spring - Inspired by botanical paintings",
+    "emeraldDesc": "Nature & Spring",
     "ruby": "Ruby",
-    "rubyDesc": "Autumn & Passion - Inspired by warm season paintings"
+    "rubyDesc": "Autumn & Passion"
   },
   "footer": {
-    "poweredBy": "Powered by",
-    "designedWith": "Designed with Art Nouveau aesthetics inspired by Alphonse Mucha"
+    "poweredBy": "Powered by"
   },
   "settings": {
     "title": "Settings",
@@ -167,7 +265,10 @@
       "maxSize": "Max 5MB, JPG or PNG",
       "saveProfile": "Save Profile",
       "saving": "Saving...",
-      "saved": "Saved!"
+      "saved": "Saved!",
+      "fileTooLarge": "File size must be less than 5MB",
+      "fileNotImage": "File must be an image",
+      "uploadFailed": "Failed to upload avatar"
     },
     "theme": {
       "title": "Theme",
@@ -200,7 +301,9 @@
       "allPreferences": "All your preferences and settings",
       "cannotBeUndone": "This action cannot be undone.",
       "cancel": "Cancel",
-      "confirmDeleteButton": "Yes, Delete My Account"
+      "confirmDeleteButton": "Yes, Delete My Account",
+      "typeDeleteError": "Please type DELETE to confirm",
+      "deleteFailed": "Failed to delete account"
     },
     "notifications": {
       "title": "Notification Preferences",
@@ -221,10 +324,86 @@
       "generatePreview": "Generate Preview",
       "generating": "Generating...",
       "previewTitle": "Weekly Digest Preview",
-      "close": "Close"
+      "close": "Close",
+      "digest": {
+        "title": "Weekly Digest Preview",
+        "button": "Preview Digest",
+        "description": "See what your weekly digest email will look like. This preview shows data from the past 7 days.",
+        "yourWeeklyProgress": "Your Weekly Progress",
+        "weekSummary": "Week Summary",
+        "completed": "Completed",
+        "rate": "Rate",
+        "longestStreak": "Longest Streak",
+        "totalTasks": "Total Tasks",
+        "topCategories": "Top Categories",
+        "completedBadge": "completed",
+        "comingUp": "Coming Up",
+        "keepUpGreatWork": "Keep up the great work! 🎉",
+        "previewInfo": "This is a preview of your weekly digest email.",
+        "emailSchedule": "Actual emails will be sent every Sunday at 6 PM."
+      },
+      "browserPushTitle": "Browser Push Notifications",
+      "browserPushDesc": "Enable push notifications to receive instant alerts in your browser",
+      "channels": {
+        "title": "Notification Channels",
+        "emailTitle": "Email Notifications",
+        "emailDesc": "Receive task reminders and weekly digests via email",
+        "pushTitle": "Push Notifications",
+        "pushDesc": "Get instant alerts on your device",
+        "digestTitle": "Weekly Digest",
+        "digestDesc": "Get a weekly summary of your progress every Sunday"
+      },
+      "timing": {
+        "title": "Timing & Frequency",
+        "maxPerDay": "Max Notifications Per Day",
+        "maxPerDayDesc": "Limit notifications to prevent overwhelm (1-20)",
+        "quietStart": "Quiet Hours Start",
+        "quietEnd": "Quiet Hours End",
+        "quietHoursDesc": "No notifications will be sent during quiet hours"
+      },
+      "tone": {
+        "title": "Notification Tone",
+        "description": "Select which tones to use in your notification progression. The tone will escalate if you don't complete a task.",
+        "encouraging": "Encouraging 🎉",
+        "encouragingDesc": "Positive and supportive",
+        "neutral": "Neutral 📋",
+        "neutralDesc": "Simple and factual",
+        "pushy": "Pushy 🔥",
+        "pushyDesc": "Urgent and direct",
+        "currentProgression": "Current progression:",
+        "noneSelected": "None selected"
+      },
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "saved": "Saved!"
     },
     "categories": {
-      "title": "Categories"
+      "title": "Categories",
+      "yourCategories": "Your Categories",
+      "newCategory": "New Category",
+      "editCategory": "Edit Category",
+      "createCategory": "Create Category",
+      "updateDesc": "Update your custom category",
+      "createDesc": "Add a new custom category for your tasks",
+      "name": "Name",
+      "namePlaceholder": "e.g., Hobbies",
+      "color": "Color",
+      "update": "Update",
+      "create": "Create",
+      "noCategories": "No custom categories yet. Create one to get started!",
+      "predefinedTitle": "Predefined Categories",
+      "predefinedDesc": "System categories that help organize your tasks",
+      "categoryUpdated": "Category updated",
+      "categoryUpdatedDesc": "{{name}} has been updated",
+      "categoryCreated": "Category created",
+      "categoryCreatedDesc": "{{name}} has been created",
+      "categoryDeleted": "Category deleted",
+      "categoryDeletedDesc": "{{name}} has been deleted",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
+      "updateFailed": "Failed to update category",
+      "createFailed": "Failed to create category",
+      "deleteFailed": "Failed to delete category",
+      "saveFailed": "Failed to save category"
     },
     "nav": {
       "profile": "Profile",
@@ -242,8 +421,7 @@
     "notifications": "Notifications",
     "settings": "Settings",
     "logo": "Gyst",
-    "beta": "BETA",
-    "footer": "Art Nouveau Design"
+    "beta": "BETA"
   },
   "ai": {
     "suggestions": "AI Task Suggestions",

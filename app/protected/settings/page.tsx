@@ -1,12 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ProfileSettings } from "@/components/settings/profile-settings";
-import { ThemeSettings } from "@/components/settings/theme-settings";
-import { LanguageSettings } from "@/components/settings/language-settings";
 import { DataManagement } from "@/components/settings/data-management";
 import { DangerZone } from "@/components/settings/danger-zone";
-import { SettingsNav } from "@/components/settings/settings-nav";
 import { SettingsHeader } from "@/components/settings/settings-header";
+import { SettingsTabs } from "@/components/settings/settings-tabs";
 import { Separator } from "@/components/ui/separator";
 import {
   updateProfile,
@@ -14,6 +12,18 @@ import {
   exportUserData,
   deleteAccount
 } from "@/app/actions/settings";
+import {
+  getNotificationPreferences,
+  updateNotificationPreferences,
+  savePushSubscription,
+  removePushSubscription,
+  generateDigestPreview,
+} from "@/app/actions/notifications";
+import { NotificationPreferencesForm } from "@/components/notifications/notification-preferences";
+import { PushPermissionButton } from "@/components/notifications/push-permission";
+import { DigestPreview } from "@/components/notifications/digest-preview";
+import { CategoryManager } from "@/components/categories/category-manager";
+import { SettingsNotificationsClient, SettingsCategoriesClient } from "./settings-client";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -33,63 +43,118 @@ export default async function SettingsPage() {
     .eq("id", user.id)
     .single();
 
+  // Get notification preferences
+  const preferences = await getNotificationPreferences(user.id);
+
+  // Get categories
+  const { data: categories } = await supabase
+    .from("task_categories")
+    .select("*")
+    .or(`user_id.is.null,user_id.eq.${user.id}`)
+    .order("is_predefined", { ascending: false })
+    .order("name");
+
   return (
     <div className="container max-w-4xl mx-auto p-6 space-y-8">
       <SettingsHeader />
-      <SettingsNav />
 
-      {/* Profile Settings */}
-      <ProfileSettings
-        userId={user.id}
-        profile={profile}
-        onUpdateProfile={async (data) => {
-          "use server";
-          await updateProfile(user.id, data);
-        }}
-        onUploadAvatar={async (file) => {
-          "use server";
-          return await uploadAvatar(user.id, file);
-        }}
-      />
+      <SettingsTabs
+        profileContent={
+          <>
+            {/* Profile Settings */}
+            <ProfileSettings
+              userId={user.id}
+              profile={profile}
+              onUpdateProfile={async (data) => {
+                "use server";
+                await updateProfile(user.id, data);
+              }}
+              onUploadAvatar={async (file) => {
+                "use server";
+                return await uploadAvatar(user.id, file);
+              }}
+            />
 
-      <Separator />
+            <Separator />
 
-      {/* Theme Settings */}
-      <ThemeSettings />
+            {/* Data Management */}
+            <DataManagement
+              userId={user.id}
+              onExport={async () => {
+                "use server";
+                return await exportUserData(user.id);
+              }}
+            />
 
-      <Separator />
+            <Separator />
 
-      {/* Language Settings */}
-      <LanguageSettings
-        userId={user.id}
-        currentLanguage={profile?.language || "en"}
-        onUpdateLanguage={async (language) => {
-          "use server";
-          await updateProfile(user.id, { language });
-        }}
-      />
+            {/* Danger Zone */}
+            <DangerZone
+              userId={user.id}
+              userEmail={user.email || ""}
+              onDeleteAccount={async () => {
+                "use server";
+                await deleteAccount(user.id);
+              }}
+            />
+          </>
+        }
+        notificationsContent={
+          <>
+            {/* Push Notifications Permission */}
+            <SettingsNotificationsClient
+              pushContent={
+                <PushPermissionButton
+                  userId={user.id}
+                  onSubscribe={async (subscription) => {
+                    "use server";
+                    await savePushSubscription(user.id, subscription);
+                  }}
+                  onUnsubscribe={async () => {
+                    "use server";
+                    await removePushSubscription(user.id);
+                  }}
+                />
+              }
+            />
 
-      <Separator />
+            <Separator />
 
-      {/* Data Management */}
-      <DataManagement
-        userId={user.id}
-        onExport={async () => {
-          "use server";
-          return await exportUserData(user.id);
-        }}
-      />
+            {/* Notification Preferences */}
+            <NotificationPreferencesForm
+              userId={user.id}
+              initialPreferences={preferences || undefined}
+              onSave={async (prefs) => {
+                "use server";
+                await updateNotificationPreferences(prefs);
+              }}
+            />
 
-      <Separator />
+            <Separator />
 
-      {/* Danger Zone */}
-      <DangerZone
-        userId={user.id}
-        userEmail={user.email || ""}
-        onDeleteAccount={async () => {
-          "use server";
-          await deleteAccount(user.id);
-        }}
+            {/* Weekly Digest Preview */}
+            <DigestPreview
+              userId={user.id}
+              onGeneratePreview={async () => {
+                "use server";
+                return await generateDigestPreview(user.id);
+              }}
+            />
+          </>
+        }
+        categoriesContent={
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Custom Categories */}
+            <div>
+              <CategoryManager categories={categories || []} userId={user.id} />
+            </div>
+
+            {/* Predefined Categories */}
+            <div>
+              <SettingsCategoriesClient categories={categories || []} />
+            </div>
+          </div>
+        }
       />
     </div>
   );

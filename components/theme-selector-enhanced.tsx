@@ -30,7 +30,7 @@ interface PaletteInfo {
 const PALETTES: Record<MuchaPalette, PaletteInfo> = {
   classic: {
     name: "Classic",
-    description: "Mauve & Gold - Inspired by Art Nouveau posters",
+    description: "Mauve & Gold",
     colors: {
       primary: "hsl(310 75% 45%)", // Mauve
       secondary: "hsl(280 60% 60%)", // Lavender
@@ -39,7 +39,7 @@ const PALETTES: Record<MuchaPalette, PaletteInfo> = {
   },
   emerald: {
     name: "Emerald",
-    description: "Nature & Spring - Inspired by botanical paintings",
+    description: "Nature & Spring",
     colors: {
       primary: "hsl(150 70% 40%)", // Emerald green
       secondary: "hsl(180 60% 60%)", // Soft teal
@@ -48,7 +48,7 @@ const PALETTES: Record<MuchaPalette, PaletteInfo> = {
   },
   ruby: {
     name: "Ruby",
-    description: "Autumn & Passion - Inspired by warm season paintings",
+    description: "Autumn & Passion",
     colors: {
       primary: "hsl(350 75% 50%)", // Ruby red
       secondary: "hsl(25 70% 60%)", // Terracotta

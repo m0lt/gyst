@@ -32,7 +32,7 @@ export function DangerZone({ userId, userEmail, onDeleteAccount }: Props) {
 
   const handleDelete = async () => {
     if (confirmText !== "DELETE") {
-      alert('Please type "DELETE" to confirm');
+      alert(t("settings.dangerZone.typeDeleteError"));
       return;
     }
 
@@ -43,7 +43,7 @@ export function DangerZone({ userId, userEmail, onDeleteAccount }: Props) {
       router.push("/");
     } catch (error) {
       console.error("Failed to delete account:", error);
-      alert("Failed to delete account");
+      alert(t("settings.dangerZone.deleteFailed"));
       setDeleting(false);
     }
   };

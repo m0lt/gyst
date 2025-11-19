@@ -29,7 +29,7 @@ export default function Home() {
             Your Life, Organized
           </h1>
           <p className="text-lead max-w-2xl mx-auto">
-            An Art Nouveau-inspired life organizer with task management, streaks, and AI-powered suggestions
+            A beautiful life organizer with task management, streaks, and AI-powered suggestions
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/auth/sign-up">
@@ -122,7 +122,7 @@ export default function Home() {
               </div>
               <CardTitle>Beautiful Themes</CardTitle>
               <CardDescription>
-                Art Nouveau-inspired design with multiple elegant themes to choose from
+                Elegant design with multiple beautiful themes to choose from
               </CardDescription>
             </CardHeader>
           </Card>
@@ -182,8 +182,6 @@ export default function Home() {
             >
               Supabase
             </a>
-            {" • "}
-            Designed with Art Nouveau aesthetics inspired by Alphonse Mucha
           </p>
         </div>
       </footer>
