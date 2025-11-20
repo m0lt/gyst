@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Card,
@@ -46,7 +46,7 @@ export function AISuggestCard({
   const [error, setError] = useState<string | null>(null);
   const [isCached, setIsCached] = useState(false);
 
-  const loadSuggestions = async (forceRefresh: boolean = false) => {
+  const loadSuggestions = useCallback(async (forceRefresh: boolean = false) => {
     setIsLoading(true);
     setError(null);
 
@@ -70,9 +70,9 @@ export function AISuggestCard({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, t]);
 
-  const handleApply = async () => {
+  const handleApply = useCallback(async () => {
     if (!suggestions || selectedIndices.size === 0) return;
 
     setIsApplying(true);
@@ -103,9 +103,9 @@ export function AISuggestCard({
     } finally {
       setIsApplying(false);
     }
-  };
+  }, [suggestions, selectedIndices, userId, t]);
 
-  const toggleSelection = (index: number) => {
+  const toggleSelection = useCallback((index: number) => {
     setSelectedIndices((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(index)) {
@@ -115,9 +115,9 @@ export function AISuggestCard({
       }
       return newSet;
     });
-  };
+  }, []);
 
-  const getFrequencyBadgeColor = (frequency: string) => {
+  const getFrequencyBadgeColor = useCallback((frequency: string) => {
     switch (frequency) {
       case "daily":
         return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
@@ -126,12 +126,12 @@ export function AISuggestCard({
       default:
         return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300";
     }
-  };
+  }, []);
 
   return (
     <Card className={cn("card-art-nouveau", className)}>
       <CardHeader>
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex-1">
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-amber-500" />
@@ -146,7 +146,7 @@ export function AISuggestCard({
             <Button
               onClick={() => loadSuggestions(false)}
               disabled={isLoading || remainingRequests === 0}
-              className="shrink-0"
+              className="w-full sm:w-auto flex-shrink-0"
             >
               {isLoading ? (
                 <>
@@ -232,11 +232,11 @@ export function AISuggestCard({
                       />
 
                       <div className="flex-1 space-y-2">
-                        <div className="flex items-start justify-between gap-2">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                           <h4 className="font-semibold text-foreground">
                             {suggestion.title}
                           </h4>
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center gap-2 flex-shrink-0">
                             {suggestion.estimated_minutes && (
                               <Badge variant="outline" className="text-xs gap-1">
                                 <Clock className="h-3 w-3" />
@@ -277,7 +277,7 @@ export function AISuggestCard({
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <Button
                   onClick={handleApply}
                   disabled={isApplying || selectedIndices.size === 0}
@@ -300,6 +300,7 @@ export function AISuggestCard({
                   variant="outline"
                   onClick={() => loadSuggestions(true)}
                   disabled={isLoading || remainingRequests === 0}
+                  className="sm:w-auto"
                 >
                   <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
                 </Button>

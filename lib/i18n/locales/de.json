@@ -16,7 +16,9 @@
     "activate": "Aktivieren",
     "pause": "Pausieren",
     "unit": "Einheit",
-    "months": "Monate"
+    "months": "Monate",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten"
   },
   "auth": {
     "signIn": "Anmelden",
@@ -38,6 +40,32 @@
     "categories": "Kategorien",
     "settings": "Einstellungen",
     "profile": "Profil"
+  },
+  "todo": {
+    "title": "Heutige Aufgaben",
+    "toDo": "Zu erledigen",
+    "completed": "Erledigt",
+    "complete": "Erledigen",
+    "reschedule": "Verschieben",
+    "mood": "Stimmung",
+    "subtasksCompleted": "erledigt",
+    "reactivate": "Reaktivieren",
+    "reactivateConfirm": "\"{{title}}\" reaktivieren?",
+    "taskReactivated": "Aufgabe reaktiviert",
+    "taskReactivatedDesc": "Die Aufgabe ist jetzt wieder in deiner To-Do-Liste",
+    "failedToReactivate": "Reaktivierung fehlgeschlagen",
+    "completeTask": "Aufgabe abschließen",
+    "howDidYouFeel": "Wie hast du dich dabei gefühlt?",
+    "happy": "Glücklich",
+    "neutral": "Neutral",
+    "difficult": "Schwierig",
+    "howLongDidItTake": "Wie lange hat es gedauert? (Minuten)",
+    "enterMinutes": "Minuten eingeben...",
+    "proofPhoto": "Beweisfoto (optional)",
+    "clickToUpload": "Klicken zum Hochladen",
+    "notes": "Notizen (optional)",
+    "anyThoughts": "Irgendwelche Gedanken zu dieser Aufgabe?",
+    "completing": "Wird abgeschlossen..."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -118,6 +146,27 @@
     "failedToDelete": "Fehler beim Löschen der Aufgabe",
     "failedToUpdate": "Fehler beim Aktualisieren der Aufgabe",
     "somethingWentWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "subtasksCount": "{{count}} Teilaufgabe",
+    "subtasksCount_plural": "{{count}} Teilaufgaben",
+    "subtask": {
+      "subtasks": "Teilaufgaben",
+      "addSubtask": "Teilaufgabe hinzufügen",
+      "placeholder": "z.B. Zutaten vorbereiten",
+      "saveTaskFirst": "Speichere zuerst die Aufgabe, um Teilaufgaben in der Datenbank zu speichern",
+      "subtaskList": "Teilaufgaben-Liste",
+      "required": "Erforderlich",
+      "requiredInfo": "Erforderliche Teilaufgaben müssen abgeschlossen sein, bevor die Aufgabe als erledigt markiert werden kann",
+      "added": "Teilaufgabe hinzugefügt",
+      "addedDesc": "Teilaufgabe wurde zur Liste hinzugefügt",
+      "deleted": "Teilaufgabe gelöscht",
+      "deletedDesc": "Teilaufgabe wurde entfernt",
+      "failedToAdd": "Fehler beim Hinzufügen der Teilaufgabe",
+      "failedToDelete": "Fehler beim Löschen der Teilaufgabe",
+      "failedToUpdate": "Fehler beim Aktualisieren der Teilaufgabe",
+      "completedLastTime": "beim letzten Mal erledigt",
+      "completionRate": "Erledigungsrate",
+      "lastCompletionNote": "Hinweis: Die Häkchen zeigen den Status deiner letzten Aufgabenerledigung."
+    },
     "taskSearch": "Aufgaben suchen...",
     "selected": "{{count}} ausgewählt",
     "bulkPauseSuccess": "Aufgaben pausiert",
@@ -133,6 +182,13 @@
     "bulkDeleteError": "Fehler beim Löschen der Aufgaben",
     "bulkDeleteErrorMsg": "{{failed}} von {{total}} Aufgaben fehlgeschlagen",
     "bulkDeleteConfirm": "Möchtest du wirklich {{count}} Aufgaben löschen?",
+    "paused": {
+      "title": "Pausierte Aufgaben",
+      "empty": "Keine pausierten Aufgaben",
+      "resume": "Fortsetzen",
+      "count": "{{count}} pausierte Aufgabe",
+      "count_plural": "{{count}} pausierte Aufgaben"
+    },
     "scheduling": {
       "title": "Planung",
       "frequencyAndSchedule": "Häufigkeit & Zeitplan",
@@ -204,18 +260,25 @@
       "close": "Schließen",
       "basicInfo": "Grundinformationen",
       "schedulingOptions": "Planungsoptionen",
-      "additionalOptions": "Weitere Optionen"
+      "additionalOptions": "Weitere Optionen",
+      "step": "Schritt {{current}} von {{total}}"
     },
+    "subtasks": "Teilaufgaben",
+    "subtask_required": "Als erforderlich markieren",
+    "add_subtask_placeholder": "Teilaufgabe hinzufügen...",
+    "subtasks_helper": "Zerlege deine Aufgabe in kleinere Schritte. Aktiviere die Checkbox, um eine Teilaufgabe als erforderlich zu markieren.",
+    "move_up": "Nach oben",
+    "move_down": "Nach unten",
     "ai": {
-      "artImage": "Jugendstil-Bild",
+      "artImage": "Aufgabenbild",
       "generate": "KI-Bild generieren",
       "generating": "Generiere...",
       "regenerate": "Bild neu generieren",
       "regenerating": "Generiere neu...",
-      "noImage": "Noch kein KI-Bild vorhanden. Generiere eines, um deine Aufgabe im Jugendstil zu visualisieren.",
+      "noImage": "Noch kein Aufgabenbild vorhanden. Generiere eines, um deine Aufgabe zu visualisieren.",
       "saveFirstToGenerate": "Speichere die Aufgabe zuerst, dann kannst du ein KI-Bild generieren.",
       "imageGenerated": "Bild generiert!",
-      "imageGeneratedDesc": "Deine Aufgabe hat jetzt ein wunderschönes Jugendstil-Bild.",
+      "imageGeneratedDesc": "Deine Aufgabe hat jetzt ein schönes Bild.",
       "imageDeleted": "Bild gelöscht",
       "imageDeletedDesc": "Das KI-Bild wurde entfernt.",
       "generationFailed": "Bildgenerierung fehlgeschlagen",
@@ -223,7 +286,8 @@
       "titleRequired": "Titel erforderlich",
       "titleRequiredDesc": "Bitte gib einen Aufgabentitel ein, bevor du ein Bild generierst.",
       "saveFirst": "Aufgabe zuerst speichern",
-      "saveFirstDesc": "Bitte speichere die Aufgabe, bevor du ein KI-Bild generierst."
+      "saveFirstDesc": "Bitte speichere die Aufgabe, bevor du ein KI-Bild generierst.",
+      "taskCreatedCanGenerateImage": "Aufgabe '{{title}}' erstellt! Du kannst jetzt ein KI-Bild generieren."
     }
   },
   "categories": {
@@ -403,7 +467,8 @@
       "updateFailed": "Fehler beim Aktualisieren der Kategorie",
       "createFailed": "Fehler beim Erstellen der Kategorie",
       "deleteFailed": "Fehler beim Löschen der Kategorie",
-      "saveFailed": "Fehler beim Speichern der Kategorie"
+      "saveFailed": "Fehler beim Speichern der Kategorie",
+      "reorderFailed": "Fehler beim Sortieren der Kategorien"
     },
     "nav": {
       "profile": "Profil",
@@ -411,17 +476,100 @@
       "notifications": "Benachrichtigungen",
       "notificationsDesc": "E-Mail & Push Einstellungen",
       "categories": "Kategorien",
-      "categoriesDesc": "Aufgabenkategorien verwalten"
+      "categoriesDesc": "Aufgabenkategorien verwalten",
+      "preferences": "Präferenzen",
+      "preferencesDesc": "Deine persönlichen Präferenzen"
+    },
+    "preferences": {
+      "title": "Persönliche Präferenzen",
+      "description": "Verwalte deine Lebensstil- und Aufgabenpräferenzen",
+      "livingSituation": "Wohnsituation",
+      "livesAlone": "Ich lebe alleine",
+      "livesAloneDesc": "Beeinflusst Aufgabenvorschläge und Planung",
+      "lifestyle": "Lebensstil",
+      "hasPets": "Ich habe Haustiere",
+      "hasPetsDesc": "Haustierpflege-Aufgaben einbeziehen",
+      "hasPlants": "Ich habe Pflanzen",
+      "hasPlantsDesc": "Pflanzenpflege-Erinnerungen einbeziehen",
+      "playsInstruments": "Ich spiele Musikinstrumente",
+      "playsInstrumentsDesc": "Übungserinnerungen einbeziehen",
+      "taskScheduling": "Aufgabenplanung",
+      "preferredTaskTime": "Bevorzugte Zeit für Aufgaben",
+      "preferredTaskTimeDesc": "Wann erledigst du Aufgaben am liebsten?",
+      "morning": "Morgen",
+      "morningDesc": "Frühaufsteher - Ich bin morgens am produktivsten",
+      "afternoon": "Nachmittag",
+      "afternoonDesc": "Mittagsschwung - Ich bevorzuge Nachmittagsaufgaben",
+      "evening": "Abend",
+      "eveningDesc": "Nachteule - Ich arbeite abends am besten",
+      "saveChanges": "Änderungen speichern",
+      "saving": "Speichert...",
+      "saved": "Gespeichert!",
+      "updateSuccess": "Präferenzen aktualisiert",
+      "updateSuccessDesc": "Deine Präferenzen wurden erfolgreich gespeichert",
+      "updateFailed": "Fehler beim Aktualisieren der Präferenzen"
     }
   },
   "navigation": {
     "dashboard": "Dashboard",
+    "todo": "To Do",
     "tasks": "Aufgaben",
+    "calendar": "Kalender",
     "statistics": "Statistiken",
     "notifications": "Benachrichtigungen",
     "settings": "Einstellungen",
     "logo": "Gyst",
     "beta": "BETA"
+  },
+  "calendar": {
+    "title": "Kalender",
+    "views": {
+      "month": "Monat",
+      "week": "Woche",
+      "day": "Tag"
+    },
+    "today": "Heute",
+    "weekdays": {
+      "monday": "Mo",
+      "tuesday": "Di",
+      "wednesday": "Mi",
+      "thursday": "Do",
+      "friday": "Fr",
+      "saturday": "Sa",
+      "sunday": "So"
+    },
+    "more": "weitere",
+    "unscheduled": "Ungeplante Aufgaben",
+    "paused": "Pausierte Aufgaben",
+    "pausedEmpty": "Keine pausierten Aufgaben für diesen Tag",
+    "anytimeToday": "Irgendwann heute",
+    "noSpecificTime": "Keine bestimmte Zeit",
+    "resumeTask": "Fortsetzen"
+  },
+  "taskInstance": {
+    "details": "Aufgabendetails",
+    "scheduledFor": "Geplant für",
+    "time": "Uhrzeit",
+    "estimatedTime": "Geschätzte Zeit",
+    "scheduledTime": "Eingeplante Zeit",
+    "scheduleInfo": "Zeitplaninformationen",
+    "description": "Beschreibung",
+    "taskImage": "Aufgabenbild",
+    "subtasks": "Teilaufgaben",
+    "completionInfo": "Abschlussinformationen",
+    "completed": "Erledigt",
+    "skipped": "Übersprungen",
+    "completedAt": "Abgeschlossen um",
+    "actualTime": "Tatsächliche Zeit",
+    "mood": "Stimmung",
+    "notes": "Notizen",
+    "proofPhoto": "Beweisfoto",
+    "complete": "Aufgabe abschließen",
+    "reschedule": "Verschieben",
+    "skip": "Überspringen",
+    "editTemplate": "Aufgabenvorlage bearbeiten",
+    "skipConfirm": "Möchtest du diese Aufgabe wirklich überspringen?",
+    "skippedDesc": "Du kannst sie jederzeit für einen anderen Tag neu planen"
   },
   "ai": {
     "suggestions": "KI-Aufgabenvorschläge",
@@ -562,5 +710,17 @@
   "timezone": {
     "searchPlaceholder": "Zeitzonen suchen...",
     "noResults": "Keine Zeitzonen gefunden"
+  },
+  "pwa": {
+    "installTitle": "Gyst installieren",
+    "installSubtitle": "Native App-Erfahrung erhalten",
+    "installDescription": "Installiere Gyst für schnelleren Zugriff, Offline-Support und eine native App-Erfahrung.",
+    "install": "Installieren",
+    "later": "Später",
+    "gotIt": "Verstanden!",
+    "iosInstructions": "Um diese App auf deinem iOS-Gerät zu installieren:",
+    "iosStep1": "Tippe auf die Teilen-Schaltfläche in Safari",
+    "iosStep2": "Scrolle nach unten und tippe auf 'Zum Home-Bildschirm'",
+    "iosStep3": "Tippe auf 'Hinzufügen' um zu installieren"
   }
 }

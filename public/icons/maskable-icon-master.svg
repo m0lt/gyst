@@ -1,0 +1,36 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Full bleed background (extends to edges for maskable icon) -->
+  <rect width="512" height="512" fill="#8B4789"/>
+
+  <!-- Safe zone circle guide (10% margin = 80% safe zone) -->
+  <!-- Content should stay within this circle: radius 204.8 (80% of 256) -->
+
+  <!-- Centered background circle for better contrast -->
+  <circle cx="256" cy="256" r="220" fill="#FAF8F5" opacity="0.95"/>
+
+  <!-- Art Nouveau decorative ring (stays within safe zone) -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#8B4789" stroke-width="2.5" opacity="0.3"/>
+
+  <!-- Stylized "G" - centered and scaled to fit safe zone -->
+  <g transform="translate(256, 256)">
+    <path d="M30 -60 Q65 -60, 80 -35 Q87 -15, 80 5 Q73 25, 50 32 L10 32 L10 60 L60 60 Q67 60, 70.5 65.5 Q74 71, 70.5 76.5 Q67 82, 60 82 L-10 82 Q-17 82, -20.5 76.5 Q-24 71, -24 62 L-24 -48 Q-24 -56, -20.5 -61.5 Q-17 -67, -10 -67 Z M10 -32 L10 5 L40 5 Q52 1.5, 56 -10 Q60 -21.5, 56 -32 Q52 -38, 40 -38 Z"
+          fill="#8B4789"/>
+  </g>
+
+  <!-- Organic flourishes (within safe zone) -->
+  <path d="M340 150 Q360 135, 375 145 Q382 153, 378 165 Q374 177, 360 185"
+        fill="none" stroke="#C49A6C" stroke-width="3" stroke-linecap="round"/>
+
+  <path d="M152 350 Q142 365, 153 378 Q164 386, 176 375"
+        fill="none" stroke="#C49A6C" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Decorative leaves -->
+  <ellipse cx="368" cy="165" rx="9" ry="13" fill="#C49A6C" opacity="0.7" transform="rotate(-30 368 165)"/>
+  <ellipse cx="167" cy="372" rx="9" ry="13" fill="#C49A6C" opacity="0.7" transform="rotate(45 167 372)"/>
+
+  <!-- Accent dots -->
+  <circle cx="210" cy="190" r="4" fill="#FAF8F5" opacity="0.6"/>
+  <circle cx="320" cy="330" r="4" fill="#FAF8F5" opacity="0.6"/>
+  <circle cx="230" cy="350" r="3.5" fill="#C49A6C" opacity="0.7"/>
+  <circle cx="340" cy="200" r="3.5" fill="#C49A6C" opacity="0.7"/>
+</svg>

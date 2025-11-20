@@ -1,25 +1,27 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Bell, Tags } from "lucide-react";
+import { User, Bell, Tags, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface SettingsTabsProps {
   profileContent: React.ReactNode;
   notificationsContent: React.ReactNode;
   categoriesContent: React.ReactNode;
+  preferencesContent: React.ReactNode;
 }
 
 export function SettingsTabs({
   profileContent,
   notificationsContent,
   categoriesContent,
+  preferencesContent,
 }: SettingsTabsProps) {
   const { t } = useTranslation();
 
   return (
     <Tabs defaultValue="profile" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-8">
+      <TabsList className="grid w-full grid-cols-4 mb-8">
         <TabsTrigger value="profile" className="flex items-center gap-2">
           <User className="h-4 w-4" />
           <span className="hidden sm:inline">{t("settings.nav.profile")}</span>
@@ -31,6 +33,10 @@ export function SettingsTabs({
         <TabsTrigger value="categories" className="flex items-center gap-2">
           <Tags className="h-4 w-4" />
           <span className="hidden sm:inline">{t("settings.nav.categories")}</span>
+        </TabsTrigger>
+        <TabsTrigger value="preferences" className="flex items-center gap-2">
+          <Settings className="h-4 w-4" />
+          <span className="hidden sm:inline">{t("settings.nav.preferences")}</span>
         </TabsTrigger>
       </TabsList>
 
@@ -44,6 +50,10 @@ export function SettingsTabs({
 
       <TabsContent value="categories" className="space-y-6">
         {categoriesContent}
+      </TabsContent>
+
+      <TabsContent value="preferences" className="space-y-6">
+        {preferencesContent}
       </TabsContent>
     </Tabs>
   );

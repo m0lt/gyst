@@ -226,10 +226,36 @@ function isSameDay(date1: Date, date2: Date): boolean {
 
 /**
  * Calculate break credits earned based on streak milestones
- * Earn 1 break credit for every 7-day streak
+ * Awards credits at specific milestones:
+ * - 7 days: 1 credit
+ * - 30 days: 2 credits
+ * - 100 days: 5 credits
+ * - 365 days: 10 credits (annual milestone)
  */
 export function calculateBreakCredits(currentStreak: number): number {
-  return Math.floor(currentStreak / 7);
+  let credits = 0;
+
+  // Award credits for each milestone reached
+  if (currentStreak >= 7) credits += 1;
+  if (currentStreak >= 30) credits += 2;
+  if (currentStreak >= 100) credits += 5;
+  if (currentStreak >= 365) credits += 10;
+
+  return credits;
+}
+
+/**
+ * Calculate break credits earned for reaching a specific milestone
+ * Returns the credits awarded for that milestone only
+ */
+export function getCreditsForMilestone(milestone: number): number {
+  switch (milestone) {
+    case 7: return 1;
+    case 30: return 2;
+    case 100: return 5;
+    case 365: return 10;
+    default: return 0;
+  }
 }
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -24,7 +24,7 @@ interface AIUsageStatsProps {
   userId: string;
 }
 
-export function AIUsageStats({ userId }: AIUsageStatsProps) {
+export const AIUsageStats = memo(function AIUsageStats({ userId }: AIUsageStatsProps) {
   const { t } = useTranslation();
   const [stats, setStats] = useState<{
     requestsToday: number;
@@ -35,11 +35,7 @@ export function AIUsageStats({ userId }: AIUsageStatsProps) {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    loadStats();
-  }, [userId]);
-
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
       const data = await getAIUsageStats(userId);
       setStats(data);
@@ -48,7 +44,11 @@ export function AIUsageStats({ userId }: AIUsageStatsProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    loadStats();
+  }, [loadStats]);
 
   if (isLoading || !stats) {
     return (
@@ -69,6 +69,7 @@ export function AIUsageStats({ userId }: AIUsageStatsProps) {
     );
   }
 
+  // Simple calculation - no need for memoization
   const usagePercentage = ((10 - stats.remainingToday) / 10) * 100;
 
   return (
@@ -146,4 +147,4 @@ export function AIUsageStats({ userId }: AIUsageStatsProps) {
       </CardContent>
     </Card>
   );
-}
+});

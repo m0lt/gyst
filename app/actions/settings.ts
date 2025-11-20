@@ -10,6 +10,14 @@ export interface ProfileData {
   avatar_url?: string;
 }
 
+export interface PreferencesData {
+  lives_alone?: boolean;
+  has_pets?: boolean;
+  has_plants?: boolean;
+  plays_instruments?: boolean;
+  preferred_task_time?: "morning" | "afternoon" | "evening";
+}
+
 /**
  * Update user profile
  */
@@ -102,6 +110,29 @@ export async function exportUserData(userId: string) {
   };
 
   return JSON.stringify(exportData, null, 2);
+}
+
+/**
+ * Update user preferences
+ */
+export async function updatePreferences(userId: string, data: PreferencesData) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      ...data,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error updating preferences:", error);
+    throw new Error("Failed to update preferences");
+  }
+
+  revalidatePath("/protected/settings");
+  return { success: true };
 }
 
 /**

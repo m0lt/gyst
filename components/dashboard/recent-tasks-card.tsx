@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Flame } from "lucide-react";
@@ -21,8 +22,10 @@ interface Props {
   tasks: Task[];
 }
 
-export function RecentTasksCard({ tasks }: Props) {
+export const RecentTasksCard = memo(function RecentTasksCard({ tasks }: Props) {
   const { t } = useTranslation();
+
+  const recentTasks = useMemo(() => tasks.slice(0, 5), [tasks]);
 
   return (
     <Card className="card-art-nouveau">
@@ -39,26 +42,26 @@ export function RecentTasksCard({ tasks }: Props) {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {tasks.slice(0, 5).map((task) => (
+          {recentTasks.map((task) => (
             <div
               key={task.id}
-              className="flex items-center justify-between p-3 rounded-lg border border-border/50"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-3 rounded-lg border border-border/50"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-3 h-3 rounded-full flex-shrink-0"
                   style={{
                     background: task.task_categories?.color || 'var(--color-category-household)'
                   }}
                 />
-                <div>
-                  <p className="font-medium">{task.title}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium truncate">{task.title}</p>
                   {task.description && (
-                    <p className="text-sm text-muted-foreground">{task.description}</p>
+                    <p className="text-sm text-muted-foreground truncate">{task.description}</p>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0 pl-6 sm:pl-0">
                 {task.current_streak && task.current_streak > 0 && (
                   <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent-foreground flex items-center gap-1">
                     <Flame className="h-3 w-3" />
@@ -75,4 +78,4 @@ export function RecentTasksCard({ tasks }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

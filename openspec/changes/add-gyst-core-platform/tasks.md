@@ -3,107 +3,107 @@
 ## Phase 1: Foundation & Database (Weeks 1-2)
 
 ### 1.1 Database Setup
-- [ ] 1.1.1 Create Supabase migration file from database-schema.sql
-- [ ] 1.1.2 Run migration on development environment
-- [ ] 1.1.3 Verify all tables, indexes, and RLS policies created
-- [ ] 1.1.4 Test RLS policies with sample user accounts
-- [ ] 1.1.5 Seed predefined task categories
-- [ ] 1.1.6 Generate TypeScript types with `npm run gen-types`
+- [x] 1.1.1 Create Supabase migration file from database-schema.sql
+- [x] 1.1.2 Run migration on development environment
+- [x] 1.1.3 Verify all tables, indexes, and RLS policies created
+- [x] 1.1.4 Test RLS policies with sample user accounts
+- [x] 1.1.5 Seed predefined task categories
+- [x] 1.1.6 Generate TypeScript types with `npm run gen-types`
 
 ### 1.2 Design System Foundation
-- [ ] 1.2.1 Define Mucha color palettes in globals.css @theme blocks
-- [ ] 1.2.2 Install and configure Framer Motion for animations
-- [ ] 1.2.3 Set up typography (Cormorant Garamond, Inter Variable)
-- [ ] 1.2.4 Create base component variants with CVA (Button, Card, Input)
-- [ ] 1.2.5 Build theme selector component
-- [ ] 1.2.6 Implement dark mode toggle with next-themes
-- [ ] 1.2.7 Create ornamental SVG assets (corners, dividers)
-- [ ] 1.2.8 Set up Storybook and configure for Art Nouveau themes
-- [ ] 1.2.9 Document all design tokens and components in Storybook
+- [x] 1.2.1 Define Mucha color palettes in globals.css @theme blocks
+- [x] 1.2.2 Install and configure Framer Motion for animations
+- [x] 1.2.3 Set up typography (Cormorant Garamond, Inter Variable)
+- [x] 1.2.4 Create base component variants with CVA (Button, Card, Input)
+- [x] 1.2.5 Build theme selector component
+- [x] 1.2.6 Implement dark mode toggle with next-themes
+- [x] 1.2.7 Create ornamental SVG assets (corners, dividers)
+- [x] 1.2.8 Set up Storybook and configure for Art Nouveau themes
+- [x] 1.2.9 Document all design tokens and components in Storybook
 
 ### 1.3 Project Configuration
-- [ ] 1.3.1 Install new dependencies (zustand, openai, resend, etc.)
-- [ ] 1.3.2 Configure environment variables (.env.example)
-- [ ] 1.3.3 Set up Vitest configuration
-- [ ] 1.3.4 Set up Playwright configuration for E2E tests
-- [ ] 1.3.5 Configure i18n with react-i18next (EN/DE)
-- [ ] 1.3.6 Create translation files structure
+- [x] 1.3.1 Install new dependencies (zustand, openai, resend, etc.)
+- [x] 1.3.2 Configure environment variables (.env.example)
+- [x] 1.3.3 Set up Vitest configuration
+- [x] 1.3.4 Set up Playwright configuration for E2E tests
+- [x] 1.3.5 Configure i18n with react-i18next (EN/DE)
+- [x] 1.3.6 Create translation files structure
 
 ### 1.4 Progressive Web App (PWA) Setup
-- [ ] 1.4.1 Install @ducanh2912/next-pwa package
-- [ ] 1.4.2 Configure next.config.ts with PWA plugin
-- [ ] 1.4.3 Create public/manifest.json with app metadata (name, icons, theme)
-- [ ] 1.4.4 Generate app icons (512x512, 192x192, 180x180, 96x96, favicon)
-- [ ] 1.4.5 Configure Service Worker with offline caching strategy
-- [ ] 1.4.6 Add viewport meta tags for native app feel
-- [ ] 1.4.7 Build "Add to Home Screen" prompt component
-- [ ] 1.4.8 Add iOS-specific meta tags (apple-mobile-web-app-capable)
+- [x] 1.4.1 Install @ducanh2912/next-pwa package
+- [x] 1.4.2 Configure next.config.ts with PWA plugin
+- [x] 1.4.3 Create public/manifest.json with app metadata (name, icons, theme)
+- [x] 1.4.4 Generate app icons (512x512, 192x192, 180x180, 96x96, favicon)
+- [x] 1.4.5 Configure Service Worker with offline caching strategy
+- [x] 1.4.6 Add viewport meta tags for native app feel
+- [x] 1.4.7 Build "Add to Home Screen" prompt component
+- [x] 1.4.8 Add iOS-specific meta tags (apple-mobile-web-app-capable)
 - [ ] 1.4.9 Test PWA installation on iOS Safari (16.4+)
 - [ ] 1.4.10 Test PWA installation on Android Chrome
 - [ ] 1.4.11 Verify offline functionality (cache-first for assets)
 - [ ] 1.4.12 Run Lighthouse PWA audit (target score > 90)
-- [ ] 1.4.13 Configure splash screen for installed PWA
+- [x] 1.4.13 Configure splash screen for installed PWA
 
 ---
 
 ## Phase 2: Core Features - Tasks & Dashboard (Weeks 3-4)
 
 ### 2.1 Zustand Store Setup
-- [ ] 2.1.1 Create task store (lib/store/task-store.ts)
-- [ ] 2.1.2 Create settings store (lib/store/settings-store.ts)
-- [ ] 2.1.3 Create streak store (lib/store/streak-store.ts)
-- [ ] 2.1.4 Create notification store (lib/store/notification-store.ts)
+- [x] 2.1.1 Create task store (lib/store/task-store.ts)
+- [x] 2.1.2 Create settings store (lib/store/settings-store.ts)
+- [x] 2.1.3 Create streak store (lib/store/streak-store.ts)
+- [x] 2.1.4 Create notification store (lib/store/notification-store.ts)
 - [ ] 2.1.5 Write unit tests for all stores
 
 ### 2.2 API Layer
-- [ ] 2.2.1 Create API client utilities (lib/api/client.ts)
-- [ ] 2.2.2 Implement API route: GET /api/tasks
-- [ ] 2.2.3 Implement API route: POST /api/tasks
-- [ ] 2.2.4 Implement API route: PATCH /api/tasks/:id
-- [ ] 2.2.5 Implement API route: DELETE /api/tasks/:id
-- [ ] 2.2.6 Implement API route: GET /api/categories
-- [ ] 2.2.7 Implement API route: POST /api/categories
-- [ ] 2.2.8 Add error handling and validation middleware
+- [x] 2.2.1 Create API client utilities (lib/api/client.ts)
+- [x] 2.2.2 Implement API route: GET /api/tasks (via server actions)
+- [x] 2.2.3 Implement API route: POST /api/tasks (via server actions)
+- [x] 2.2.4 Implement API route: PATCH /api/tasks/:id (via server actions)
+- [x] 2.2.5 Implement API route: DELETE /api/tasks/:id (via server actions)
+- [x] 2.2.6 Implement API route: GET /api/categories (via server actions)
+- [x] 2.2.7 Implement API route: POST /api/categories (via server actions)
+- [x] 2.2.8 Add error handling and validation middleware
 - [ ] 2.2.9 Write integration tests for all API routes
 
 ### 2.3 Task Management UI
-- [ ] 2.3.1 Build TaskCard component with Art Nouveau styling
-- [ ] 2.3.2 Build TaskForm component (create/edit)
-- [ ] 2.3.3 Build SubtaskList component
-- [ ] 2.3.4 Build TaskFilters component (category, frequency)
-- [ ] 2.3.5 Build TaskSearch component with debounced input
-- [ ] 2.3.6 Build TaskBulkActions component
-- [ ] 2.3.7 Implement task CRUD operations in UI
-- [ ] 2.3.8 Add form validation and error states
+- [x] 2.3.1 Build TaskCard component with Art Nouveau styling
+- [x] 2.3.2 Build TaskForm component (create/edit)
+- [x] 2.3.3 Build SubtaskList component
+- [x] 2.3.4 Build TaskFilters component (category, frequency)
+- [x] 2.3.5 Build TaskSearch component with debounced input
+- [x] 2.3.6 Build TaskBulkActions component
+- [x] 2.3.7 Implement task CRUD operations in UI
+- [x] 2.3.8 Add form validation and error states
 - [ ] 2.3.9 Write component tests with React Testing Library
 
 ### 2.4 Dashboard
-- [ ] 2.4.1 Create dashboard layout (app/dashboard/page.tsx)
-- [ ] 2.4.2 Build CategoryGroup component with collapse/expand
-- [ ] 2.4.3 Build ProgressRing component (circular streak indicator)
-- [ ] 2.4.4 Build QuickActions component (complete, snooze, skip)
-- [ ] 2.4.5 Implement task grouping (by category, by due date)
-- [ ] 2.4.6 Add dashboard filters and view modes
-- [ ] 2.4.7 Build DashboardStats summary component
-- [ ] 2.4.8 Implement responsive layouts (mobile/tablet/desktop)
-- [ ] 2.4.9 Add loading states and skeleton screens
-- [ ] 2.4.10 Optimize dashboard performance (React.memo, useMemo)
+- [x] 2.4.1 Create dashboard layout (app/dashboard/page.tsx)
+- [x] 2.4.2 Build CategoryGroup component with collapse/expand
+- [x] 2.4.3 Build ProgressRing component (circular streak indicator)
+- [x] 2.4.4 Build QuickActions component (complete, snooze, skip)
+- [x] 2.4.5 Implement task grouping (by category, by due date)
+- [x] 2.4.6 Add dashboard filters and view modes
+- [x] 2.4.7 Build DashboardStats summary component
+- [x] 2.4.8 Implement responsive layouts (mobile/tablet/desktop)
+- [x] 2.4.9 Add loading states and skeleton screens
+- [x] 2.4.10 Optimize dashboard performance (React.memo, useMemo)
 
 ### 2.5 Category System
-- [ ] 2.5.1 Build CategorySelector component
-- [ ] 2.5.2 Build CategoryManager component (create/edit custom categories)
-- [ ] 2.5.3 Implement category color picker with theme colors
-- [ ] 2.5.4 Implement category icon selector (Lucide icons)
-- [ ] 2.5.5 Add category sorting and reordering
+- [x] 2.5.1 Build CategorySelector component
+- [x] 2.5.2 Build CategoryManager component (create/edit custom categories)
+- [x] 2.5.3 Implement category color picker with theme colors
+- [x] 2.5.4 Implement category icon selector (Lucide icons)
+- [x] 2.5.5 Add category sorting and reordering
 
 ---
 
 ## Phase 3: Gamification & Intelligence (Weeks 5-6)
 
 ### 3.1 Streak Tracking
-- [ ] 3.1.1 Implement streak calculation function (calculate_task_streak)
-- [ ] 3.1.2 Create StreakDisplay component with flame indicators
-- [ ] 3.1.3 Build StreakCalendarHeatmap component
+- [x] 3.1.1 Implement streak calculation function (calculate_task_streak)
+- [x] 3.1.2 Create StreakDisplay component with flame indicators
+- [x] 3.1.3 Build StreakCalendarHeatmap component
 - [ ] 3.1.4 Implement break credits system (earn/use logic)
 - [ ] 3.1.5 Build StreakMilestone celebration modal with confetti
 - [ ] 3.1.6 Create streak recalculation background job
@@ -113,35 +113,35 @@
 - [ ] 3.1.10 Write tests for streak calculations
 
 ### 3.2 Task Completion Flow
-- [ ] 3.2.1 Build TaskCompletionModal component
-- [ ] 3.2.2 Implement photo proof upload (Supabase Storage)
+- [x] 3.2.1 Build TaskCompletionModal component
+- [x] 3.2.2 Implement photo proof upload (Supabase Storage)
 - [ ] 3.2.3 Add image compression before upload (sharp or browser-native)
-- [ ] 3.2.4 Build ActualTimeTracker component
+- [x] 3.2.4 Build ActualTimeTracker component
 - [ ] 3.2.5 Implement subtask completion checklist
-- [ ] 3.2.6 Update streak on completion (real-time)
-- [ ] 3.2.7 Calculate and update actual_minutes_avg
+- [x] 3.2.6 Update streak on completion (real-time)
+- [x] 3.2.7 Calculate and update actual_minutes_avg
 - [ ] 3.2.8 Show completion celebration animation
 - [ ] 3.2.9 Add completion history view
 
 ### 3.3 AI Assistant Integration
-- [ ] 3.3.1 Set up OpenAI SDK and API key
-- [ ] 3.3.2 Create AI service layer (lib/ai/suggestions.ts)
-- [ ] 3.3.3 Implement onboarding question flow
-- [ ] 3.3.4 Build OnboardingWizard component
-- [ ] 3.3.5 Implement task suggestion prompt engineering
+- [x] 3.3.1 Set up OpenAI SDK and API key
+- [x] 3.3.2 Create AI service layer (lib/ai/suggestions.ts)
+- [x] 3.3.3 Implement onboarding question flow
+- [x] 3.3.4 Build OnboardingWizard component
+- [x] 3.3.5 Implement task suggestion prompt engineering
 - [ ] 3.3.6 Create suggestion caching logic (24h TTL)
-- [ ] 3.3.7 Build AISuggest component with "Refresh" button
+- [x] 3.3.7 Build AISuggest component with "Refresh" button
 - [ ] 3.3.8 Implement rate limiting (10 requests/user/day)
 - [ ] 3.3.9 Add fallback template-based suggestions
 - [ ] 3.3.10 Implement cost monitoring and alerts
 - [ ] 3.3.11 Write tests for AI suggestion logic
 
 ### 3.4 Statistics & Analytics
-- [ ] 3.4.1 Create statistics page (app/statistics/page.tsx)
-- [ ] 3.4.2 Implement completion rate chart (recharts)
-- [ ] 3.4.3 Build category breakdown pie/donut chart
-- [ ] 3.4.4 Build streak history line chart
-- [ ] 3.4.5 Implement time-spent analysis
+- [x] 3.4.1 Create statistics page (app/statistics/page.tsx)
+- [x] 3.4.2 Implement completion rate chart (recharts)
+- [x] 3.4.3 Build category breakdown pie/donut chart
+- [x] 3.4.4 Build streak history line chart
+- [x] 3.4.5 Implement time-spent analysis
 - [ ] 3.4.6 Add date range selector for stats
 - [ ] 3.4.7 Create exportable reports (CSV/PDF)
 - [ ] 3.4.8 Build personal records / achievements section
@@ -155,7 +155,7 @@
 - [ ] 4.1.2 Set up Microsoft Graph API credentials
 - [ ] 4.1.3 Implement OAuth2 flow for Google Calendar
 - [ ] 4.1.4 Implement OAuth2 flow for Microsoft 365
-- [ ] 4.1.5 Create calendar sync service (lib/calendar/sync.ts)
+- [x] 4.1.5 Create calendar sync service (lib/calendar/sync.ts) - scaffolding only
 - [ ] 4.1.6 Build CalendarConnect component
 - [ ] 4.1.7 Implement bidirectional sync (Gyst ↔ External)
 - [ ] 4.1.8 Create availability calculation algorithm
@@ -165,33 +165,33 @@
 - [ ] 4.1.12 Handle token refresh and expiration
 
 ### 4.2 Notification System
-- [ ] 4.2.1 Set up Resend API key
-- [ ] 4.2.2 Create email templates (Handlebars or React Email)
-- [ ] 4.2.3 Implement notification queue system
-- [ ] 4.2.4 Build notification preferences UI (per category)
-- [ ] 4.2.5 Implement progressive tone levels (encouraging → scolding)
+- [x] 4.2.1 Set up Resend API key
+- [x] 4.2.2 Create email templates (Handlebars or React Email)
+- [x] 4.2.3 Implement notification queue system
+- [x] 4.2.4 Build notification preferences UI (per category)
+- [x] 4.2.5 Implement progressive tone levels (encouraging → scolding)
 - [ ] 4.2.6 Create notification scheduler (cron or background job)
-- [ ] 4.2.7 Implement Web Push API setup
-- [ ] 4.2.8 Build push subscription component
+- [x] 4.2.7 Implement Web Push API setup
+- [x] 4.2.8 Build push subscription component
 - [ ] 4.2.9 Add quiet hours logic
 - [ ] 4.2.10 Implement notification batching (max per day)
 - [ ] 4.2.11 Build notification history view
 - [ ] 4.2.12 Add unsubscribe links in emails
 
 ### 4.3 Weekly Digest
-- [ ] 4.3.1 Create weekly digest email template
-- [ ] 4.3.2 Implement digest generation logic (completion summary)
+- [x] 4.3.1 Create weekly digest email template
+- [x] 4.3.2 Implement digest generation logic (completion summary)
 - [ ] 4.3.3 Build digest preview component (in settings)
 - [ ] 4.3.4 Schedule weekly digest sending (Sundays at 6pm)
-- [ ] 4.3.5 Add digest opt-out option
+- [x] 4.3.5 Add digest opt-out option
 - [ ] 4.3.6 Include personalized insights in digest
 
 ### 4.4 Settings & Preferences
-- [ ] 4.4.1 Create settings page (app/settings/page.tsx)
-- [ ] 4.4.2 Build ProfileSettings section (name, avatar, timezone)
-- [ ] 4.4.3 Build ThemeSettings section (palette, dark mode)
-- [ ] 4.4.4 Build NotificationSettings section
-- [ ] 4.4.5 Build LanguageSettings section (EN/DE toggle)
+- [x] 4.4.1 Create settings page (app/settings/page.tsx)
+- [x] 4.4.2 Build ProfileSettings section (name, avatar, timezone)
+- [x] 4.4.3 Build ThemeSettings section (palette, dark mode)
+- [x] 4.4.4 Build NotificationSettings section
+- [x] 4.4.5 Build LanguageSettings section (EN/DE toggle)
 - [ ] 4.4.6 Implement avatar upload (Supabase Storage)
 - [ ] 4.4.7 Add account deletion option (with confirmation)
 - [ ] 4.4.8 Build data export feature (JSON download)

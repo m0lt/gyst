@@ -14,10 +14,19 @@ type CreateCategoryInput = {
 export async function createCategory(input: CreateCategoryInput) {
   const supabase = await createClient();
 
+  // Generate slug from name: lowercase, replace spaces with hyphens, remove special chars
+  const slug = input.name
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
   const { data, error } = await supabase
     .from("task_categories")
     .insert({
       name: input.name,
+      slug: slug,
       color: input.color,
       icon: input.icon || null,
       user_id: input.user_id || null,
@@ -42,13 +51,25 @@ export async function updateCategory(
 ) {
   const supabase = await createClient();
 
+  // Generate slug from name if name is being updated
+  const updateData: any = {
+    name: input.name,
+    color: input.color,
+    icon: input.icon,
+  };
+
+  if (input.name) {
+    updateData.slug = input.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
   const { data, error } = await supabase
     .from("task_categories")
-    .update({
-      name: input.name,
-      color: input.color,
-      icon: input.icon,
-    })
+    .update(updateData)
     .eq("id", categoryId)
     .select()
     .single();
@@ -104,6 +125,7 @@ export async function getCategories(userId?: string) {
     .from("task_categories")
     .select("*")
     .order("is_predefined", { ascending: false })
+    .order("sort_order", { ascending: true, nullsFirst: false })
     .order("name");
 
   if (userId) {
@@ -120,4 +142,31 @@ export async function getCategories(userId?: string) {
   }
 
   return data;
+}
+
+export async function updateCategoriesOrder(
+  updates: Array<{ id: string; sort_order: number }>
+) {
+  const supabase = await createClient();
+
+  // Update each category's sort_order
+  const promises = updates.map(({ id, sort_order }) =>
+    supabase
+      .from("task_categories")
+      .update({ sort_order })
+      .eq("id", id)
+  );
+
+  const results = await Promise.all(promises);
+
+  // Check for errors
+  const errors = results.filter((r) => r.error);
+  if (errors.length > 0) {
+    console.error("Error updating categories order:", errors);
+    throw new Error("Failed to update categories order");
+  }
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected/settings");
+  revalidatePath("/protected");
 }

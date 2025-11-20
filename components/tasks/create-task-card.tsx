@@ -12,10 +12,9 @@ type Category = {
 
 interface Props {
   categories: Category[];
-  userId: string;
 }
 
-export function CreateTaskCard({ categories, userId }: Props) {
+export function CreateTaskCard({ categories }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -25,7 +24,7 @@ export function CreateTaskCard({ categories, userId }: Props) {
         <CardDescription>{t("tasks.addNewTask")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <CreateTaskForm categories={categories} userId={userId} />
+        <CreateTaskForm categories={categories} />
       </CardContent>
     </Card>
   );

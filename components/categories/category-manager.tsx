@@ -13,8 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2 } from "lucide-react";
-import { apiCreateCategory, apiUpdateCategory, apiDeleteCategory } from "@/lib/api/categories";
+import { Plus, Pencil, Trash2, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
+import { apiCreateCategory, apiUpdateCategory, apiDeleteCategory, apiUpdateCategoriesOrder } from "@/lib/api/categories";
 import { useNotificationStore } from "@/lib/store/notification-store";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,7 @@ interface Category {
   color: string;
   icon?: string | null;
   is_predefined: boolean;
+  sort_order: number | null;
 }
 
 interface CategoryManagerProps {
@@ -153,6 +154,66 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
     }
   };
 
+  const handleMoveUp = async (index: number) => {
+    if (index === 0) return;
+
+    const reordered = [...customCategories];
+    [reordered[index - 1], reordered[index]] = [reordered[index], reordered[index - 1]];
+
+    // Update sort_order for affected categories
+    const updates = reordered.map((cat, idx) => ({
+      id: cat.id,
+      sort_order: idx,
+    }));
+
+    setIsLoading(true);
+    try {
+      const result = await apiUpdateCategoriesOrder(updates);
+      if (result.success) {
+        router.refresh();
+      } else {
+        showError(t("settings.categories.reorderFailed"), result.error.message);
+      }
+    } catch (err) {
+      showError(
+        t("settings.categories.reorderFailed"),
+        err instanceof Error ? err.message : undefined
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMoveDown = async (index: number) => {
+    if (index === customCategories.length - 1) return;
+
+    const reordered = [...customCategories];
+    [reordered[index], reordered[index + 1]] = [reordered[index + 1], reordered[index]];
+
+    // Update sort_order for affected categories
+    const updates = reordered.map((cat, idx) => ({
+      id: cat.id,
+      sort_order: idx,
+    }));
+
+    setIsLoading(true);
+    try {
+      const result = await apiUpdateCategoriesOrder(updates);
+      if (result.success) {
+        router.refresh();
+      } else {
+        showError(t("settings.categories.reorderFailed"), result.error.message);
+      }
+    } catch (err) {
+      showError(
+        t("settings.categories.reorderFailed"),
+        err instanceof Error ? err.message : undefined
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const customCategories = categories.filter((c) => !c.is_predefined);
 
   return (
@@ -230,33 +291,66 @@ export function CategoryManager({ categories, userId }: CategoryManagerProps) {
         </p>
       ) : (
         <div className="space-y-2">
-          {customCategories.map((category) => (
+          {customCategories.map((category, index) => (
             <div
               key={category.id}
-              className="flex items-center justify-between p-3 rounded-lg border-2 border-border/50"
+              className="group flex items-center gap-2 p-3 rounded-lg border-2 border-border/50 hover:border-primary/30 transition-colors"
             >
-              <div className="flex items-center gap-3">
+              {/* Drag Handle */}
+              <div className="text-muted-foreground/40 group-hover:text-muted-foreground cursor-grab">
+                <GripVertical className="h-4 w-4" />
+              </div>
+
+              {/* Category Info */}
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div
-                  className="w-4 h-4 rounded-full"
+                  className="w-4 h-4 rounded-full flex-shrink-0"
                   style={{ backgroundColor: category.color }}
                 />
-                <span className="font-medium">{category.name}</span>
+                <span className="font-medium truncate">{category.name}</span>
               </div>
-              <div className="flex items-center gap-2">
+
+              {/* Actions */}
+              <div className="flex items-center gap-1">
+                {/* Reorder Buttons */}
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="icon"
+                  onClick={() => handleMoveUp(index)}
+                  disabled={index === 0 || isLoading}
+                  className="h-8 w-8"
+                  aria-label={t("common.moveUp", "Move up")}
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleMoveDown(index)}
+                  disabled={index === customCategories.length - 1 || isLoading}
+                  className="h-8 w-8"
+                  aria-label={t("common.moveDown", "Move down")}
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+
+                {/* Edit/Delete */}
+                <div className="w-px h-4 bg-border mx-1" />
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleEdit(category)}
                   disabled={isLoading}
+                  className="h-8 w-8"
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="icon"
                   onClick={() => handleDelete(category.id, category.name)}
                   disabled={isLoading}
-                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  className="h-8 w-8 text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

@@ -4,6 +4,7 @@ import {
   updateCategory,
   deleteCategory,
   getCategories,
+  updateCategoriesOrder,
 } from "@/app/actions/categories";
 import type { Database } from "@/database.types";
 
@@ -52,4 +53,13 @@ export async function apiGetCategories(
   userId?: string
 ): Promise<Result<Category[]>> {
   return safeServerAction(() => getCategories(userId));
+}
+
+/**
+ * Update categories sort order
+ */
+export async function apiUpdateCategoriesOrder(
+  updates: Array<{ id: string; sort_order: number }>
+): Promise<Result<void>> {
+  return safeServerAction(() => updateCategoriesOrder(updates));
 }

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { ProfileSettings } from "@/components/settings/profile-settings";
+import { PreferencesSettings } from "@/components/settings/preferences-settings";
 import { DataManagement } from "@/components/settings/data-management";
 import { DangerZone } from "@/components/settings/danger-zone";
 import { SettingsHeader } from "@/components/settings/settings-header";
@@ -10,7 +11,8 @@ import {
   updateProfile,
   uploadAvatar,
   exportUserData,
-  deleteAccount
+  deleteAccount,
+  updatePreferences
 } from "@/app/actions/settings";
 import {
   getNotificationPreferences,
@@ -154,6 +156,22 @@ export default async function SettingsPage() {
               <SettingsCategoriesClient categories={categories || []} />
             </div>
           </div>
+        }
+        preferencesContent={
+          <PreferencesSettings
+            userId={user.id}
+            preferences={{
+              lives_alone: profile?.lives_alone || false,
+              has_pets: profile?.has_pets || false,
+              has_plants: profile?.has_plants || false,
+              plays_instruments: profile?.plays_instruments || false,
+              preferred_task_time: profile?.preferred_task_time || "morning",
+            }}
+            onUpdatePreferences={async (data) => {
+              "use server";
+              await updatePreferences(user.id, data);
+            }}
+          />
         }
       />
     </div>

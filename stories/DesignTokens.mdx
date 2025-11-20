@@ -1,0 +1,217 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/addon-docs';
+
+<Meta title="Design System/Design Tokens" />
+
+# Gyst Design Tokens
+
+The Gyst app uses an Art Nouveau-inspired design system based on the work of Alphonse Mucha. This page documents all design tokens (colors, typography, spacing, etc.) used throughout the application.
+
+## Color Palettes
+
+Gyst offers 5 different Art Nouveau-inspired color themes. Use the theme toolbar in Storybook to switch between them.
+
+### Mucha Classic (Default)
+Warm, earthy tones inspired by Mucha's classic posters.
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="Main brand color"
+    colors={{
+      'primary': 'hsl(301, 35%, 41%)',
+      'primary-foreground': 'hsl(45, 100%, 96%)',
+    }}
+  />
+  <ColorItem
+    title="Secondary"
+    subtitle="Accent color"
+    colors={{
+      'secondary': 'hsl(35, 60%, 60%)',
+      'secondary-foreground': 'hsl(222.2, 47.4%, 11.2%)',
+    }}
+  />
+  <ColorItem
+    title="Accent"
+    subtitle="Highlights & links"
+    colors={{
+      'accent': 'hsl(24, 70%, 50%)',
+      'accent-foreground': 'hsl(45, 100%, 96%)',
+    }}
+  />
+  <ColorItem
+    title="Background"
+    subtitle="Page backgrounds"
+    colors={{
+      'background': 'hsl(45, 50%, 98%)',
+      'foreground': 'hsl(222.2, 84%, 4.9%)',
+    }}
+  />
+  <ColorItem
+    title="Card"
+    subtitle="Card backgrounds"
+    colors={{
+      'card': 'hsl(45, 40%, 96%)',
+      'card-foreground': 'hsl(222.2, 84%, 4.9%)',
+    }}
+  />
+  <ColorItem
+    title="Muted"
+    subtitle="Subtle backgrounds"
+    colors={{
+      'muted': 'hsl(45, 30%, 92%)',
+      'muted-foreground': 'hsl(215.4, 16.3%, 46.9%)',
+    }}
+  />
+  <ColorItem
+    title="States"
+    subtitle="Semantic colors"
+    colors={{
+      'destructive': 'hsl(0, 84.2%, 60.2%)',
+      'border': 'hsl(45, 25%, 85%)',
+      'input': 'hsl(45, 25%, 85%)',
+      'ring': 'hsl(301, 35%, 41%)',
+    }}
+  />
+</ColorPalette>
+
+### Theme Palettes
+
+You can switch between these themes using the data-theme attribute:
+
+- **mucha-classic**: Warm earthy tones (plum, gold, terracotta)
+- **mucha-spring**: Fresh spring garden colors (rose, sage, cream)
+- **mucha-autumn**: Harvest season palette (burgundy, amber, forest)
+- **mucha-evening**: Evening jewel tones (sapphire, amethyst, midnight)
+- **mucha-ocean**: Ocean depths palette (teal, coral, sand)
+
+## Typography
+
+The app uses a sophisticated typography system with custom fonts inspired by the Art Nouveau era.
+
+### Font Families
+
+- **Display (Headings)**: Playfair Display - ornamental serif for titles
+- **Body (Text)**: Inter Variable - modern sans-serif for readability
+- **Ornamental (Accents)**: Cinzel Decorative - decorative capitals
+
+### Type Scale
+
+<Typeset
+  fontSizes={[48, 40, 32, 24, 20, 16, 14, 12]}
+  fontWeight={700}
+  sampleText="The quick brown fox jumps over the lazy dog"
+  fontFamily="var(--font-display)"
+/>
+
+### Heading Styles
+
+```css
+.heading-1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; }
+.heading-2 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.01em; }
+.heading-3 { font-size: 2rem; font-weight: 600; }
+.heading-4 { font-size: 1.5rem; font-weight: 600; }
+.text-lead { font-size: 1.25rem; font-weight: 400; }
+.text-body { font-size: 1rem; font-weight: 400; }
+.text-small { font-size: 0.875rem; font-weight: 400; }
+.text-xs { font-size: 0.75rem; font-weight: 400; }
+```
+
+## Spacing
+
+The app uses a consistent spacing scale based on rem units:
+
+| Token | Value | Pixels (16px base) |
+|-------|-------|-------------------|
+| 0 | 0 | 0px |
+| 1 | 0.25rem | 4px |
+| 2 | 0.5rem | 8px |
+| 3 | 0.75rem | 12px |
+| 4 | 1rem | 16px |
+| 5 | 1.25rem | 20px |
+| 6 | 1.5rem | 24px |
+| 8 | 2rem | 32px |
+| 10 | 2.5rem | 40px |
+| 12 | 3rem | 48px |
+| 16 | 4rem | 64px |
+| 20 | 5rem | 80px |
+| 24 | 6rem | 96px |
+
+## Border Radius
+
+Art Nouveau-inspired organic curves:
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| sm | 0.375rem | Small elements, badges |
+| DEFAULT | 0.5rem | Buttons, inputs |
+| md | 0.75rem | Cards, modals |
+| lg | 1rem | Large containers |
+| xl | 1.5rem | Feature cards |
+| 2xl | 2rem | Hero sections |
+| full | 9999px | Circular elements |
+
+## Shadows
+
+Subtle shadows for depth and hierarchy:
+
+```css
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+--shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+```
+
+## Dark Mode
+
+All themes support dark mode. Switch using the dark mode toolbar in Storybook.
+
+In dark mode:
+- Background colors become darker
+- Text colors invert for contrast
+- Primary/accent colors are slightly desaturated
+- Borders become more subtle
+
+## Accessibility
+
+All color combinations meet WCAG 2.1 AA standards for contrast:
+- Normal text: 4.5:1 minimum
+- Large text: 3:1 minimum
+- Interactive elements have clear focus states
+
+## Usage
+
+### CSS Variables
+
+All tokens are available as CSS custom properties:
+
+```css
+.my-component {
+  color: hsl(var(--primary));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: var(--spacing-4);
+}
+```
+
+### Tailwind Classes
+
+Use Tailwind utility classes that map to these tokens:
+
+```jsx
+<div className="bg-background text-foreground p-4 rounded-lg shadow-md">
+  <h1 className="heading-2 text-primary">Hello</h1>
+  <p className="text-muted-foreground">Welcome to Gyst</p>
+</div>
+```
+
+### Theme Attribute
+
+Apply themes via the data-theme attribute:
+
+```jsx
+<div data-theme="mucha-spring">
+  <!-- Spring theme colors applied -->
+</div>
+```

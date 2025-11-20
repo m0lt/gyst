@@ -14,13 +14,17 @@ function getOpenAIClient(): OpenAI {
 }
 
 /**
- * Create a Mucha Art Nouveau style prompt from task details
+ * Create an Art Nouveau style prompt from task details
  */
 function createMuchaPrompt(title: string, description: string | null): string {
-  // Simplified task context - use only title to avoid safety issues
-  const taskContext = title;
+  // Use both title and description for richer context, but keep it safe and general
+  let taskContext = title;
+  if (description && description.trim()) {
+    taskContext = `${title}: ${description}`;
+  }
 
-  return `Art Nouveau poster in the style of Alphonse Mucha, elegant decorative design representing the theme of "${taskContext}", flowing organic lines, ornamental floral borders, soft pastel colors with gold details, vintage 1890s aesthetic, beautiful composition`;
+  // Focus on the activity/person performing the task in Art Nouveau style
+  return `Art Nouveau style illustration showing a person performing the activity: "${taskContext}". Elegant vintage poster aesthetic with soft pastel colors, flowing decorative lines, floral border elements, 1890s artistic style. The main focus should be the person doing the task in a beautiful artistic composition. Important: purely visual illustration, absolutely no text, no letters, no words anywhere in the image`;
 }
 
 /**

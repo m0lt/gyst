@@ -16,7 +16,9 @@
     "activate": "Activate",
     "pause": "Pause",
     "unit": "Unit",
-    "months": "months"
+    "months": "months",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "auth": {
     "signIn": "Sign In",
@@ -38,6 +40,32 @@
     "categories": "Categories",
     "settings": "Settings",
     "profile": "Profile"
+  },
+  "todo": {
+    "title": "Today's Tasks",
+    "toDo": "To Do",
+    "completed": "Completed",
+    "complete": "Complete",
+    "reschedule": "Reschedule",
+    "mood": "Mood",
+    "subtasksCompleted": "completed",
+    "reactivate": "Reactivate",
+    "reactivateConfirm": "Reactivate \"{{title}}\"?",
+    "taskReactivated": "Task reactivated",
+    "taskReactivatedDesc": "The task is now back in your todo list",
+    "failedToReactivate": "Failed to reactivate",
+    "completeTask": "Complete Task",
+    "howDidYouFeel": "How did you feel doing this?",
+    "happy": "Happy",
+    "neutral": "Neutral",
+    "difficult": "Difficult",
+    "howLongDidItTake": "How long did it take? (minutes)",
+    "enterMinutes": "Enter minutes...",
+    "proofPhoto": "Proof Photo (optional)",
+    "clickToUpload": "Click to upload photo",
+    "notes": "Notes (optional)",
+    "anyThoughts": "Any thoughts about this task?",
+    "completing": "Completing..."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -118,6 +146,27 @@
     "failedToDelete": "Failed to delete task",
     "failedToUpdate": "Failed to update task",
     "somethingWentWrong": "Something went wrong. Please try again.",
+    "subtasksCount": "{{count}} subtask",
+    "subtasksCount_plural": "{{count}} subtasks",
+    "subtask": {
+      "subtasks": "Subtasks",
+      "addSubtask": "Add Subtask",
+      "placeholder": "e.g., Prepare ingredients",
+      "saveTaskFirst": "Save the task first to persist subtasks to the database",
+      "subtaskList": "Subtask List",
+      "required": "Required",
+      "requiredInfo": "Required subtasks must be completed before marking the task as done",
+      "added": "Subtask added",
+      "addedDesc": "Subtask has been added to the list",
+      "deleted": "Subtask deleted",
+      "deletedDesc": "Subtask has been removed",
+      "failedToAdd": "Failed to add subtask",
+      "failedToDelete": "Failed to delete subtask",
+      "failedToUpdate": "Failed to update subtask",
+      "completedLastTime": "completed last time",
+      "completionRate": "completion rate",
+      "lastCompletionNote": "Note: Checkmarks show completion status from your last task completion."
+    },
     "taskSearch": "Search tasks...",
     "selected": "{{count}} selected",
     "bulkPauseSuccess": "Tasks paused",
@@ -133,6 +182,13 @@
     "bulkDeleteError": "Failed to delete tasks",
     "bulkDeleteErrorMsg": "{{failed}} of {{total}} tasks failed",
     "bulkDeleteConfirm": "Are you sure you want to delete {{count}} tasks?",
+    "paused": {
+      "title": "Paused Tasks",
+      "empty": "No paused tasks",
+      "resume": "Resume",
+      "count": "{{count}} paused task",
+      "count_plural": "{{count}} paused tasks"
+    },
     "scheduling": {
       "title": "Scheduling",
       "frequencyAndSchedule": "Frequency & Schedule",
@@ -204,18 +260,25 @@
       "close": "Close",
       "basicInfo": "Basic Information",
       "schedulingOptions": "Scheduling Options",
-      "additionalOptions": "Additional Options"
+      "additionalOptions": "Additional Options",
+      "step": "Step {{current}} of {{total}}"
     },
+    "subtasks": "Subtasks",
+    "subtask_required": "Mark as required",
+    "add_subtask_placeholder": "Add a subtask...",
+    "subtasks_helper": "Break down your task into smaller steps. Check the box to mark a subtask as required.",
+    "move_up": "Move up",
+    "move_down": "Move down",
     "ai": {
-      "artImage": "Art Nouveau Image",
+      "artImage": "Task Image",
       "generate": "Generate AI Image",
       "generating": "Generating...",
       "regenerate": "Regenerate Image",
       "regenerating": "Regenerating...",
-      "noImage": "No AI image yet. Generate one to visualize your task in Art Nouveau style.",
+      "noImage": "No task image yet. Generate one to visualize your task.",
       "saveFirstToGenerate": "Save the task first, then you can generate an AI image.",
       "imageGenerated": "Image generated!",
-      "imageGeneratedDesc": "Your task now has a beautiful Art Nouveau image.",
+      "imageGeneratedDesc": "Your task now has a beautiful image.",
       "imageDeleted": "Image deleted",
       "imageDeletedDesc": "The AI image has been removed.",
       "generationFailed": "Image generation failed",
@@ -223,7 +286,8 @@
       "titleRequired": "Title required",
       "titleRequiredDesc": "Please enter a task title before generating an image.",
       "saveFirst": "Save task first",
-      "saveFirstDesc": "Please save the task before generating an AI image."
+      "saveFirstDesc": "Please save the task before generating an AI image.",
+      "taskCreatedCanGenerateImage": "Task '{{title}}' created! You can now generate an AI image."
     }
   },
   "categories": {
@@ -403,7 +467,8 @@
       "updateFailed": "Failed to update category",
       "createFailed": "Failed to create category",
       "deleteFailed": "Failed to delete category",
-      "saveFailed": "Failed to save category"
+      "saveFailed": "Failed to save category",
+      "reorderFailed": "Failed to reorder categories"
     },
     "nav": {
       "profile": "Profile",
@@ -411,17 +476,100 @@
       "notifications": "Notifications",
       "notificationsDesc": "Email & push settings",
       "categories": "Categories",
-      "categoriesDesc": "Manage task categories"
+      "categoriesDesc": "Manage task categories",
+      "preferences": "Preferences",
+      "preferencesDesc": "Your personal preferences"
+    },
+    "preferences": {
+      "title": "Personal Preferences",
+      "description": "Manage your lifestyle and task preferences",
+      "livingSituation": "Living Situation",
+      "livesAlone": "I live alone",
+      "livesAloneDesc": "Affects task suggestions and scheduling",
+      "lifestyle": "Lifestyle",
+      "hasPets": "I have pets",
+      "hasPetsDesc": "Include pet care tasks",
+      "hasPlants": "I have plants",
+      "hasPlantsDesc": "Include plant care reminders",
+      "playsInstruments": "I play musical instruments",
+      "playsInstrumentsDesc": "Include practice reminders",
+      "taskScheduling": "Task Scheduling",
+      "preferredTaskTime": "Preferred Time for Tasks",
+      "preferredTaskTimeDesc": "When do you prefer to complete tasks?",
+      "morning": "Morning",
+      "morningDesc": "Early bird - I'm most productive in the morning",
+      "afternoon": "Afternoon",
+      "afternoonDesc": "Midday momentum - I prefer afternoon tasks",
+      "evening": "Evening",
+      "eveningDesc": "Night owl - I work best in the evening",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "saved": "Saved!",
+      "updateSuccess": "Preferences updated",
+      "updateSuccessDesc": "Your preferences have been saved successfully",
+      "updateFailed": "Failed to update preferences"
     }
   },
   "navigation": {
     "dashboard": "Dashboard",
+    "todo": "To Do",
     "tasks": "Tasks",
+    "calendar": "Calendar",
     "statistics": "Statistics",
     "notifications": "Notifications",
     "settings": "Settings",
     "logo": "Gyst",
     "beta": "BETA"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "views": {
+      "month": "Month",
+      "week": "Week",
+      "day": "Day"
+    },
+    "today": "Today",
+    "weekdays": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    },
+    "more": "more",
+    "unscheduled": "Unscheduled Tasks",
+    "paused": "Paused Tasks",
+    "pausedEmpty": "No paused tasks for this day",
+    "anytimeToday": "Anytime today",
+    "noSpecificTime": "No specific time",
+    "resumeTask": "Resume"
+  },
+  "taskInstance": {
+    "details": "Task Details",
+    "scheduledFor": "Scheduled for",
+    "time": "Time",
+    "estimatedTime": "Estimated time",
+    "scheduledTime": "Scheduled time",
+    "scheduleInfo": "Schedule Information",
+    "description": "Description",
+    "taskImage": "Task Image",
+    "subtasks": "Subtasks",
+    "completionInfo": "Completion Information",
+    "completed": "Completed",
+    "skipped": "Skipped",
+    "completedAt": "Completed at",
+    "actualTime": "Actual time",
+    "mood": "Mood",
+    "notes": "Notes",
+    "proofPhoto": "Proof Photo",
+    "complete": "Complete Task",
+    "reschedule": "Reschedule",
+    "skip": "Skip",
+    "editTemplate": "Edit Task Template",
+    "skipConfirm": "Are you sure you want to skip this task?",
+    "skippedDesc": "You can always reschedule it for another day"
   },
   "ai": {
     "suggestions": "AI Task Suggestions",
@@ -562,5 +710,17 @@
   "timezone": {
     "searchPlaceholder": "Search timezones...",
     "noResults": "No timezones found"
+  },
+  "pwa": {
+    "installTitle": "Install Gyst",
+    "installSubtitle": "Get the native app experience",
+    "installDescription": "Install Gyst for faster access, offline support, and a native app experience.",
+    "install": "Install",
+    "later": "Later",
+    "gotIt": "Got it!",
+    "iosInstructions": "To install this app on your iOS device:",
+    "iosStep1": "Tap the Share button in Safari",
+    "iosStep2": "Scroll down and tap 'Add to Home Screen'",
+    "iosStep3": "Tap 'Add' to install"
   }
 }

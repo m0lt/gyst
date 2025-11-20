@@ -17,10 +17,9 @@ type Category = {
 
 type CreateTaskFormProps = {
   categories: Category[];
-  userId: string;
 };
 
-export function CreateTaskForm({ categories, userId }: CreateTaskFormProps) {
+export function CreateTaskForm({ categories }: CreateTaskFormProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +41,6 @@ export function CreateTaskForm({ categories, userId }: CreateTaskFormProps) {
         description,
         category_id: selectedCategory || categories[0]?.id,
         frequency,
-        user_id: userId,
       });
 
       // Show success notification

@@ -1,12 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-export function NoTasksCard() {
+export const NoTasksCard = memo(function NoTasksCard() {
   const { t } = useTranslation();
 
   return (
@@ -25,4 +26,4 @@ export function NoTasksCard() {
       </CardContent>
     </Card>
   );
-}
+});

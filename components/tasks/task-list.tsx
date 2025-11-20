@@ -3,16 +3,14 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Check, Flame, Trash2, Play, Pause, ListTodo, Clock, Timer, Tag, Pencil } from "lucide-react";
-import { completeTask, deleteTask, toggleTaskActive } from "@/app/actions/tasks";
+import { Flame, Trash2, Play, Pause, ListTodo, Clock, Timer, Tag, Pencil } from "lucide-react";
+import { deleteTask, toggleTaskActive } from "@/app/actions/tasks";
 import { useRouter } from "next/navigation";
 import { useTaskStore } from "@/lib/store/task-store";
 import { useNotificationStore } from "@/lib/store/notification-store";
 import { TaskSearch } from "./task-search";
 import { TaskFilters } from "./task-filters";
-import { TaskBulkActions } from "./task-bulk-actions";
 import { TaskFormModal } from "./task-form-modal";
 import { EmptyState } from "@/components/empty-states/empty-state";
 import { ArtNouveauPlaceholder } from "@/components/ornaments/art-nouveau-placeholder";
@@ -61,7 +59,7 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { filter, selectedTaskIds, toggleTaskSelection, clearFilter } = useTaskStore();
+  const { filter, clearFilter } = useTaskStore();
   const { success, error } = useNotificationStore();
 
   // Apply filters
@@ -97,20 +95,6 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
       return true;
     });
   }, [initialTasks, filter]);
-
-  const handleComplete = async (taskId: string) => {
-    setIsLoading(taskId);
-    try {
-      await completeTask(taskId);
-      success(t("tasks.taskCompleted"), t("tasks.taskCompletedDesc"));
-      router.refresh();
-    } catch (err) {
-      console.error("Failed to complete task:", err);
-      error(t("tasks.failedToComplete"), t("tasks.somethingWentWrong"));
-    } finally {
-      setIsLoading(null);
-    }
-  };
 
   const handleDelete = async (taskId: string) => {
     if (!confirm(t("tasks.deleteConfirm"))) return;
@@ -164,9 +148,6 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
         </CardContent>
       </Card>
 
-      {/* Bulk Actions */}
-      <TaskBulkActions />
-
       {/* Task List */}
       <Card className="card-art-nouveau">
         <CardHeader>
@@ -200,12 +181,7 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
             )
           ) : (
             <div className="space-y-3">
-              {filteredTasks.map((task) => {
-                const isCompletedToday = task.last_completed_at &&
-                  new Date(task.last_completed_at).toDateString() === new Date().toDateString();
-                const isSelected = selectedTaskIds.includes(task.id);
-
-                return (
+              {filteredTasks.map((task) => (
                   <div
                     key={task.id}
                     className={`
@@ -215,18 +191,9 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                           ? "border-border/50"
                           : "border-border/30 opacity-60"
                       }
-                      ${isCompletedToday ? "bg-accent/10 border-accent" : ""}
-                      ${isSelected ? "border-primary bg-primary/5" : ""}
                     `}
                   >
                     <div className="flex items-start gap-4">
-                      {/* Selection Checkbox */}
-                      <Checkbox
-                        checked={isSelected}
-                        onCheckedChange={() => toggleTaskSelection(task.id)}
-                        className="mt-1"
-                      />
-
                       {/* AI Image or Placeholder */}
                       <div className="flex-shrink-0">
                         {task.ai_image_url ? (
@@ -243,12 +210,6 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                       {/* Task Info */}
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-3">
-                          <div
-                            className="w-3 h-3 rounded-full flex-shrink-0"
-                            style={{
-                              background: task.task_categories?.color || "#ccc",
-                            }}
-                          />
                           <h3 className="font-display font-semibold text-lg">
                             {task.title}
                           </h3>
@@ -260,12 +221,26 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                         </div>
 
                         {task.description && (
-                          <p className="text-sm text-muted-foreground pl-6">
+                          <p className="text-sm text-muted-foreground">
                             {task.description}
                           </p>
                         )}
 
-                        <div className="flex flex-wrap items-center gap-3 pl-6">
+                        <div className="flex flex-wrap items-center gap-3">
+                          {/* Category Badge */}
+                          {task.task_categories && (
+                            <Badge
+                              variant="outline"
+                              className="text-xs border-2"
+                              style={{
+                                borderColor: task.task_categories.color,
+                                color: task.task_categories.color,
+                              }}
+                            >
+                              {task.task_categories.name}
+                            </Badge>
+                          )}
+
                           {/* Priority Badge */}
                           <Badge
                             variant={
@@ -280,9 +255,9 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                             {t(`tasks.priority.${task.priority}`)}
                           </Badge>
 
-                          {/* Frequency & Category */}
+                          {/* Frequency */}
                           <span className="text-xs text-muted-foreground">
-                            {t(`tasks.${task.frequency}`)} • {task.task_categories?.name}
+                            {t(`tasks.${task.frequency}`)}
                           </span>
 
                           {/* Time */}
@@ -327,24 +302,12 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                               </div>
                             </div>
                           )}
+
                         </div>
                       </div>
 
                       {/* Actions */}
                       <div className="flex items-center gap-2">
-                        {task.is_active && (
-                          <Button
-                            size="sm"
-                            variant={isCompletedToday ? "secondary" : "default"}
-                            onClick={() => handleComplete(task.id)}
-                            disabled={isLoading === task.id || isCompletedToday}
-                            className="gap-2"
-                          >
-                            <Check className="h-4 w-4" />
-                            {isCompletedToday ? t("tasks.done") : t("tasks.complete")}
-                          </Button>
-                        )}
-
                         <Button
                           size="sm"
                           variant="outline"
@@ -378,8 +341,7 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
                       </div>
                     </div>
                   </div>
-                );
-              })}
+              ))}
             </div>
           )}
         </CardContent>
@@ -388,7 +350,6 @@ export function TaskList({ tasks: initialTasks, categories }: TaskListProps) {
       {/* Edit Task Modal */}
       <TaskFormModal
         categories={categories}
-        userId={editingTask?.user_id || ""}
         existingTask={editingTask || undefined}
         open={isEditModalOpen}
         onOpenChange={(open) => {

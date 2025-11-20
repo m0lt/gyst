@@ -6,10 +6,12 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   CheckSquare,
+  ListTodo,
   BarChart3,
   Sparkles,
   X,
   Bell,
+  CalendarDays,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -37,9 +39,19 @@ export function AppSidebar({ isOpen = false, onClose, user }: AppSidebarProps) {
       icon: LayoutDashboard,
     },
     {
+      name: t("navigation.todo"),
+      href: "/protected/todo",
+      icon: ListTodo,
+    },
+    {
       name: t("navigation.tasks"),
       href: "/protected/tasks",
       icon: CheckSquare,
+    },
+    {
+      name: t("navigation.calendar"),
+      href: "/protected/calendar",
+      icon: CalendarDays,
     },
     {
       name: t("navigation.statistics"),

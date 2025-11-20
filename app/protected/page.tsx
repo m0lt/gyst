@@ -44,7 +44,7 @@ export default async function DashboardPage() {
   const completionRate = activeTasks > 0 ? (completedToday / activeTasks) * 100 : 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Welcome Header */}
       <DashboardWelcome userName={user.user_metadata?.full_name} />
 
@@ -57,9 +57,9 @@ export default async function DashboardPage() {
       />
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Main Content (Left - 2 columns) */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Quick Actions */}
           <QuickActionsCard />
 
@@ -72,7 +72,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Sidebar (Right - 1 column) */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* AI Suggestions */}
           <AISuggestCard userId={user.id} />
 

@@ -7,8 +7,8 @@ export function TasksHeader() {
 
   return (
     <div className="space-y-2">
-      <h1 className="heading-2">{t("tasks.title")}</h1>
-      <p className="text-lead">
+      <h1 className="heading-2" suppressHydrationWarning>{t("tasks.title")}</h1>
+      <p className="text-lead" suppressHydrationWarning>
         {t("tasks.subtitle")}
       </p>
     </div>

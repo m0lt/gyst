@@ -9,7 +9,6 @@ type CreateTaskInput = {
   description: string;
   category_id: string;
   frequency: "daily" | "weekly" | "custom";
-  user_id: string;
   // Enhanced scheduling fields
   priority?: TaskPriority;
   scheduled_duration?: number | null;
@@ -19,12 +18,18 @@ type CreateTaskInput = {
   recurrence_pattern?: RecurrencePattern | null;
 };
 
-type UpdateTaskInput = Partial<Omit<CreateTaskInput, 'user_id'>> & {
+type UpdateTaskInput = Partial<CreateTaskInput> & {
   id: string;
 };
 
 export async function createTask(input: CreateTaskInput) {
   const supabase = await createClient();
+
+  // Get authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    throw new Error("User not authenticated");
+  }
 
   // Validate inputs
   if (input.scheduled_duration && input.scheduled_duration <= 0) {
@@ -44,7 +49,7 @@ export async function createTask(input: CreateTaskInput) {
       description: input.description || null,
       category_id: input.category_id,
       frequency: input.frequency,
-      user_id: input.user_id,
+      user_id: user.id,
       is_active: true,
       // Enhanced scheduling fields
       priority: input.priority || 'medium',
@@ -69,6 +74,12 @@ export async function createTask(input: CreateTaskInput) {
 
 export async function updateTask(input: UpdateTaskInput) {
   const supabase = await createClient();
+
+  // Get authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    throw new Error("User not authenticated");
+  }
 
   // Validate inputs
   if (input.scheduled_duration !== undefined && input.scheduled_duration !== null && input.scheduled_duration <= 0) {
@@ -105,8 +116,23 @@ export async function updateTask(input: UpdateTaskInput) {
     throw new Error(error.message || "Failed to update task");
   }
 
+  // Update future task instances if schedule-related fields were changed
+  const today = new Date().toISOString().split('T')[0];
+
+  if (input.preferred_time !== undefined) {
+    // Update scheduled_time for all future instances (including today and beyond)
+    await supabase
+      .from("task_instances")
+      .update({ scheduled_time: input.preferred_time })
+      .eq("task_id", input.id)
+      .eq("user_id", user.id)
+      .gte("due_date", today)
+      .is("completed_at", null); // Only update non-completed instances
+  }
+
   revalidatePath("/protected/tasks");
   revalidatePath("/protected");
+  revalidatePath("/protected/calendar");
   return data;
 }
 
@@ -120,11 +146,18 @@ export async function completeTask(
     userId: string;
   }
 ) {
+  const supabase = await createClient();
+
+  // Get authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    throw new Error("User not authenticated");
+  }
+
   // Handle both string taskId and full input object
   const input = typeof taskIdOrInput === "string"
-    ? { taskId: taskIdOrInput, userId: "" }
-    : taskIdOrInput;
-  const supabase = await createClient();
+    ? { taskId: taskIdOrInput, userId: user.id }
+    : { ...taskIdOrInput, userId: user.id }; // Always use authenticated user's ID
 
   // Get the current task with all completions for streak calculation
   const { data: task } = await supabase
@@ -245,8 +278,6 @@ export async function completeTask(
   }
 
   // Update or create streak record
-  const breakCredits = calculateBreakCredits(streakResult.currentStreak);
-
   const { data: existingStreak } = await supabase
     .from("streaks")
     .select("*")
@@ -255,6 +286,27 @@ export async function completeTask(
 
   const previousStreak = existingStreak?.current_streak || 0;
 
+  // Check for milestone
+  const milestoneCheck = hasReachedMilestone(
+    streakResult.currentStreak,
+    previousStreak
+  );
+
+  // Import getCreditsForMilestone to award credits only for the specific milestone reached
+  const { getCreditsForMilestone } = await import("@/lib/utils/streak-calculator");
+
+  let newCreditsEarned = 0;
+  let updateMilestoneData: { last_milestone_at?: string; next_milestone?: number } = {};
+
+  if (milestoneCheck.reached && milestoneCheck.milestone) {
+    // Award credits for the specific milestone reached
+    newCreditsEarned = getCreditsForMilestone(milestoneCheck.milestone);
+    updateMilestoneData = {
+      last_milestone_at: now.toISOString(),
+      next_milestone: milestoneCheck.milestone, // Track which milestone was reached
+    };
+  }
+
   const streakData = {
     task_id: input.taskId,
     user_id: input.userId,
@@ -262,11 +314,11 @@ export async function completeTask(
     longest_streak: streakResult.longestStreak,
     total_completions: streakResult.totalCompletions,
     completion_rate: streakResult.completionRate,
-    earned_breaks: breakCredits,
-    available_breaks: existingStreak
-      ? existingStreak.available_breaks + (breakCredits - (existingStreak.earned_breaks || 0))
-      : breakCredits,
+    earned_breaks: (existingStreak?.earned_breaks || 0) + newCreditsEarned,
+    available_breaks: (existingStreak?.available_breaks || 0) + newCreditsEarned,
+    used_breaks: existingStreak?.used_breaks || 0,
     last_calculated_at: now.toISOString(),
+    ...updateMilestoneData,
   };
 
   if (existingStreak) {
@@ -278,12 +330,6 @@ export async function completeTask(
     await supabase.from("streaks").insert(streakData);
   }
 
-  // Check for milestone
-  const milestoneCheck = hasReachedMilestone(
-    streakResult.currentStreak,
-    previousStreak
-  );
-
   revalidatePath("/protected/tasks");
   revalidatePath("/protected");
 
@@ -292,9 +338,59 @@ export async function completeTask(
     completion,
     streakResult,
     milestone: milestoneCheck.reached ? milestoneCheck.milestone : null,
-    earnedBreakCredits: milestoneCheck.reached
-      ? breakCredits - (existingStreak?.earned_breaks || 0)
-      : 0,
+    earnedBreakCredits: newCreditsEarned,
+  };
+}
+
+/**
+ * Use a break credit to preserve streak when missing a task
+ */
+export async function useBreakCredit(taskId: string) {
+  const supabase = await createClient();
+
+  // Get authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Get the streak record
+  const { data: streak, error: streakError } = await supabase
+    .from("streaks")
+    .select("*")
+    .eq("task_id", taskId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (streakError || !streak) {
+    throw new Error("Streak record not found");
+  }
+
+  // Check if user has available break credits
+  if ((streak.available_breaks || 0) <= 0) {
+    throw new Error("No break credits available");
+  }
+
+  // Update streak record: decrement available_breaks, increment used_breaks
+  const { error: updateError } = await supabase
+    .from("streaks")
+    .update({
+      available_breaks: (streak.available_breaks || 0) - 1,
+      used_breaks: (streak.used_breaks || 0) + 1,
+    })
+    .eq("id", streak.id);
+
+  if (updateError) {
+    console.error("Error using break credit:", updateError);
+    throw new Error("Failed to use break credit");
+  }
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected");
+
+  return {
+    success: true,
+    remainingBreaks: (streak.available_breaks || 0) - 1,
   };
 }
 
@@ -330,4 +426,176 @@ export async function toggleTaskActive(taskId: string, isActive: boolean) {
 
   revalidatePath("/protected/tasks");
   revalidatePath("/protected");
+}
+
+// ============================================================================
+// SUBTASK MANAGEMENT
+// ============================================================================
+
+type CreateSubtaskInput = {
+  taskId: string;
+  title: string;
+  isRequired?: boolean;
+  sortOrder?: number;
+};
+
+type UpdateSubtaskInput = {
+  id: string;
+  title?: string;
+  isRequired?: boolean;
+  sortOrder?: number;
+};
+
+/**
+ * Create a new subtask for a task
+ */
+export async function createSubtask(input: CreateSubtaskInput) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("task_subtasks")
+    .insert({
+      task_id: input.taskId,
+      title: input.title,
+      is_required: input.isRequired ?? false,
+      sort_order: input.sortOrder ?? 0,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating subtask:", error);
+    throw new Error(error.message || "Failed to create subtask");
+  }
+
+  // Update has_subtasks flag on parent task
+  await supabase
+    .from("tasks")
+    .update({ has_subtasks: true })
+    .eq("id", input.taskId);
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected");
+  return data;
+}
+
+/**
+ * Update an existing subtask
+ */
+export async function updateSubtask(input: UpdateSubtaskInput) {
+  const supabase = await createClient();
+
+  const updateData: any = {};
+  if (input.title !== undefined) updateData.title = input.title;
+  if (input.isRequired !== undefined) updateData.is_required = input.isRequired;
+  if (input.sortOrder !== undefined) updateData.sort_order = input.sortOrder;
+
+  const { data, error } = await supabase
+    .from("task_subtasks")
+    .update(updateData)
+    .eq("id", input.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating subtask:", error);
+    throw new Error(error.message || "Failed to update subtask");
+  }
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected");
+  return data;
+}
+
+/**
+ * Delete a subtask
+ */
+export async function deleteSubtask(subtaskId: string, taskId: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("task_subtasks")
+    .delete()
+    .eq("id", subtaskId);
+
+  if (error) {
+    console.error("Error deleting subtask:", error);
+    throw new Error("Failed to delete subtask");
+  }
+
+  // Check if task still has subtasks
+  const { data: remainingSubtasks } = await supabase
+    .from("task_subtasks")
+    .select("id")
+    .eq("task_id", taskId);
+
+  // Update has_subtasks flag
+  if (remainingSubtasks && remainingSubtasks.length === 0) {
+    await supabase
+      .from("tasks")
+      .update({ has_subtasks: false })
+      .eq("id", taskId);
+  }
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected");
+}
+
+/**
+ * Reorder subtasks for a task
+ */
+export async function reorderSubtasks(taskId: string, subtaskIds: string[]) {
+  const supabase = await createClient();
+
+  // Update each subtask's sort_order based on its position in the array
+  const updates = subtaskIds.map((id, index) => ({
+    id,
+    sort_order: index,
+  }));
+
+  for (const update of updates) {
+    await supabase
+      .from("task_subtasks")
+      .update({ sort_order: update.sort_order })
+      .eq("id", update.id)
+      .eq("task_id", taskId); // Safety check
+  }
+
+  revalidatePath("/protected/tasks");
+  revalidatePath("/protected");
+}
+
+/**
+ * Get all paused tasks for the authenticated user
+ */
+export async function getPausedTasks() {
+  const supabase = await createClient();
+
+  // Get authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .select(`
+      *,
+      task_categories (
+        id,
+        name,
+        color,
+        icon
+      )
+    `)
+    .eq("user_id", user.id)
+    .eq("is_active", false)
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching paused tasks:", error);
+    throw new Error(error.message || "Failed to fetch paused tasks");
+  }
+
+  return data || [];
 }

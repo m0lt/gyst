@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Flame, Target, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
@@ -12,7 +13,7 @@ interface DashboardStatsProps {
   completionRate: number;
 }
 
-export function DashboardStats({
+export const DashboardStats = memo(function DashboardStats({
   totalTasks,
   completedToday,
   longestStreak,
@@ -20,7 +21,7 @@ export function DashboardStats({
 }: DashboardStatsProps) {
   const { t } = useTranslation();
 
-  const statCards = [
+  const statCards = useMemo(() => [
     {
       title: t("dashboard.totalTasks"),
       icon: Target,
@@ -45,14 +46,14 @@ export function DashboardStats({
       color: "text-purple-600 dark:text-purple-400",
       bgColor: "bg-purple-50 dark:bg-purple-950",
     },
-  ];
+  ], [t]);
 
-  const stats = [
+  const stats = useMemo(() => [
     { value: totalTasks, suffix: "" },
     { value: completedToday, suffix: "" },
     { value: longestStreak, suffix: ` ${t("dashboard.days")}` },
     { value: Math.round(completionRate), suffix: "%" },
-  ];
+  ], [totalTasks, completedToday, longestStreak, completionRate, t]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -90,4 +91,4 @@ export function DashboardStats({
       })}
     </div>
   );
-}
+});

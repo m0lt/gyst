@@ -4,6 +4,7 @@ import {
   completeTask,
   deleteTask,
   toggleTaskActive,
+  useBreakCredit,
 } from "@/app/actions/tasks";
 import type { Database } from "@/database.types";
 
@@ -15,7 +16,6 @@ export type CreateTaskInput = {
   description?: string;
   category_id: string;
   frequency: "daily" | "weekly" | "custom";
-  user_id: string;
   estimated_minutes?: number;
   subtasks?: string[];
 };
@@ -74,4 +74,13 @@ export async function apiBatchDeleteTasks(
 ): Promise<Result<void>[]> {
   const actions = taskIds.map((id) => safeServerAction(() => deleteTask(id)));
   return Promise.all(actions);
+}
+
+/**
+ * Use a break credit to preserve streak
+ */
+export async function apiUseBreakCredit(
+  taskId: string
+): Promise<Result<{ success: boolean; remainingBreaks: number }>> {
+  return safeServerAction(() => useBreakCredit(taskId));
 }

@@ -39,20 +39,20 @@ type Task = {
 
 interface TaskFormModalProps {
   categories: Category[];
-  userId: string;
   existingTask?: Task;
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onTaskUpdated?: () => void;
 }
 
 export function TaskFormModal({
   categories,
-  userId,
   existingTask,
   trigger,
   open: controlledOpen,
   onOpenChange,
+  onTaskUpdated,
 }: TaskFormModalProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -65,6 +65,10 @@ export function TaskFormModal({
   const handleSuccess = () => {
     setIsOpen(false);
     router.refresh();
+    // Call the callback to notify parent components of the update
+    if (onTaskUpdated) {
+      onTaskUpdated();
+    }
   };
 
   const handleCancel = () => {
@@ -97,7 +101,6 @@ export function TaskFormModal({
         </DialogHeader>
         <TaskForm
           categories={categories}
-          userId={userId}
           existingTask={existingTask}
           onSuccess={handleSuccess}
           onCancel={handleCancel}

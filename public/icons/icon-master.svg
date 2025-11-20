@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#FAF8F5" rx="64"/>
+
+  <!-- Art Nouveau Decorative Frame -->
+  <path d="M120 80 Q140 70, 160 80 L352 80 Q372 70, 392 80 L392 432 Q372 442, 352 432 L160 432 Q140 442, 120 432 Z"
+        fill="none" stroke="#8B4789" stroke-width="3" opacity="0.3"/>
+
+  <!-- Stylized "G" with Art Nouveau curves -->
+  <path d="M300 150 Q350 150, 370 190 Q380 220, 370 250 Q360 280, 330 290 L280 290 L280 330 L350 330 Q360 330, 365 338 Q370 345, 365 352 Q360 360, 350 360 L260 360 Q250 360, 245 352 Q240 345, 240 335 L240 175 Q240 165, 245 158 Q250 150, 260 150 Z M280 190 L280 250 L315 250 Q330 245, 335 230 Q340 215, 335 200 Q330 190, 315 190 Z"
+        fill="#8B4789"/>
+
+  <!-- Organic flourish top right -->
+  <path d="M340 140 Q360 120, 380 130 Q390 140, 385 155 Q380 170, 360 180"
+        fill="none" stroke="#C49A6C" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Organic flourish bottom left -->
+  <path d="M140 370 Q130 390, 145 405 Q160 415, 175 400"
+        fill="none" stroke="#C49A6C" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Decorative leaves/organic elements -->
+  <ellipse cx="370" cy="155" rx="8" ry="12" fill="#C49A6C" opacity="0.6" transform="rotate(-30 370 155)"/>
+  <ellipse cx="160" cy="395" rx="8" ry="12" fill="#C49A6C" opacity="0.6" transform="rotate(45 160 395)"/>
+
+  <!-- Small accent dots (Art Nouveau style) -->
+  <circle cx="190" cy="170" r="3" fill="#8B4789" opacity="0.4"/>
+  <circle cx="340" cy="340" r="3" fill="#8B4789" opacity="0.4"/>
+  <circle cx="210" cy="360" r="2.5" fill="#C49A6C" opacity="0.5"/>
+  <circle cx="360" cy="180" r="2.5" fill="#C49A6C" opacity="0.5"/>
+</svg>

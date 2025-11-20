@@ -6,18 +6,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { createTask, updateTask } from "@/app/actions/tasks";
+import { createTask, updateTask, createSubtask, updateSubtask, deleteSubtask } from "@/app/actions/tasks";
 import { generateTaskImage, deleteTaskImage } from "@/app/actions/ai-images";
 import { useNotificationStore } from "@/lib/store/notification-store";
 import { useTranslation } from "react-i18next";
 import type { TaskPriority, RecurrencePattern } from "@/lib/types/task-scheduling";
 import { REMINDER_OPTIONS, DAYS_OF_WEEK } from "@/lib/types/task-scheduling";
-import { X, Sparkles, Loader2, Trash2 } from "lucide-react";
+import { X, Sparkles, Loader2, Trash2, Expand, Plus, GripVertical } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Category = {
   id: string;
   name: string;
   color: string;
+};
+
+type Subtask = {
+  id: string;
+  title: string;
+  is_required: boolean;
+  sort_order: number;
 };
 
 type Task = {
@@ -34,20 +43,23 @@ type Task = {
   recurrence_pattern: RecurrencePattern | null;
   ai_image_url: string | null;
   ai_image_prompt: string | null;
+  subtasks?: Subtask[];
 };
 
 type TaskFormProps = {
   categories: Category[];
-  userId: string;
   existingTask?: Task;
   onSuccess?: () => void;
   onCancel?: () => void;
 };
 
-export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel }: TaskFormProps) {
+export function TaskForm({ categories, existingTask, onSuccess, onCancel }: TaskFormProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const { success, error } = useNotificationStore();
+
+  // Current task state (for newly created tasks)
+  const [currentTask, setCurrentTask] = useState<Task | undefined>(existingTask);
 
   // Form state
   const [title, setTitle] = useState(existingTask?.title || "");
@@ -72,6 +84,15 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
   const [aiImageUrl, setAiImageUrl] = useState<string | null>(existingTask?.ai_image_url || null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+
+  // Subtask state
+  const [subtasks, setSubtasks] = useState<Subtask[]>(existingTask?.subtasks || []);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
+
+  // Multi-step form state
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 4;
 
   // Set default category if none selected
   useEffect(() => {
@@ -110,6 +131,76 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
     setRecurrencePattern({ ...recurrencePattern, weekdaysOnly: checked });
   };
 
+  // Subtask management handlers
+  const handleAddSubtask = async () => {
+    if (!newSubtaskTitle.trim()) return;
+
+    if (currentTask) {
+      // Task exists - create subtask in database
+      try {
+        const newSubtask = await createSubtask({
+          taskId: currentTask.id,
+          title: newSubtaskTitle.trim(),
+          isRequired: false,
+          sortOrder: subtasks.length,
+        });
+        setSubtasks([...subtasks, newSubtask]);
+        setNewSubtaskTitle("");
+        success(t("tasks.subtask.added"), t("tasks.subtask.addedDesc"));
+      } catch (err: any) {
+        error(t("tasks.subtask.failedToAdd"), err?.message || t("tasks.somethingWentWrong"));
+      }
+    } else {
+      // Task doesn't exist yet - add to local state
+      const tempSubtask: Subtask = {
+        id: `temp-${Date.now()}`,
+        title: newSubtaskTitle.trim(),
+        is_required: false,
+        sort_order: subtasks.length,
+      };
+      setSubtasks([...subtasks, tempSubtask]);
+      setNewSubtaskTitle("");
+    }
+  };
+
+  const handleDeleteSubtask = async (subtaskId: string, index: number) => {
+    if (currentTask && !subtaskId.startsWith("temp-")) {
+      // Task exists and subtask is persisted - delete from database
+      try {
+        await deleteSubtask(subtaskId, currentTask.id);
+        setSubtasks(subtasks.filter((_, i) => i !== index));
+        success(t("tasks.subtask.deleted"), t("tasks.subtask.deletedDesc"));
+      } catch (err: any) {
+        error(t("tasks.subtask.failedToDelete"), err?.message || t("tasks.somethingWentWrong"));
+      }
+    } else {
+      // Remove from local state only
+      setSubtasks(subtasks.filter((_, i) => i !== index));
+    }
+  };
+
+  const handleToggleSubtaskRequired = async (subtaskId: string, index: number, isRequired: boolean) => {
+    if (currentTask && !subtaskId.startsWith("temp-")) {
+      // Task exists and subtask is persisted - update in database
+      try {
+        await updateSubtask({
+          id: subtaskId,
+          isRequired,
+        });
+        const updated = [...subtasks];
+        updated[index].is_required = isRequired;
+        setSubtasks(updated);
+      } catch (err: any) {
+        error(t("tasks.subtask.failedToUpdate"), err?.message || t("tasks.somethingWentWrong"));
+      }
+    } else {
+      // Update local state only
+      const updated = [...subtasks];
+      updated[index].is_required = isRequired;
+      setSubtasks(updated);
+    }
+  };
+
   // Handle AI image generation
   const handleGenerateImage = async () => {
     if (!title.trim()) {
@@ -118,7 +209,7 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
     }
 
     // For new tasks, we need to save first
-    if (!existingTask) {
+    if (!currentTask) {
       error(t("tasks.ai.saveFirst"), t("tasks.ai.saveFirstDesc"));
       return;
     }
@@ -127,7 +218,7 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
     setImageError(null);
 
     try {
-      const result = await generateTaskImage(existingTask.id, title, description);
+      const result = await generateTaskImage(currentTask.id, title, description);
       setAiImageUrl(result.imageUrl);
       success(t("tasks.ai.imageGenerated"), t("tasks.ai.imageGeneratedDesc"));
     } catch (err: any) {
@@ -141,10 +232,10 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
 
   // Handle AI image deletion
   const handleDeleteImage = async () => {
-    if (!existingTask) return;
+    if (!currentTask) return;
 
     try {
-      await deleteTaskImage(existingTask.id);
+      await deleteTaskImage(currentTask.id);
       setAiImageUrl(null);
       success(t("tasks.ai.imageDeleted"), t("tasks.ai.imageDeletedDesc"));
     } catch (err: any) {
@@ -176,7 +267,6 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
         description,
         category_id: selectedCategory,
         frequency,
-        user_id: userId,
         priority,
         scheduled_duration: scheduledDuration ? parseInt(scheduledDuration, 10) : null,
         tags,
@@ -185,19 +275,48 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
         recurrence_pattern: finalRecurrencePattern,
       };
 
-      if (existingTask) {
-        await updateTask({ ...taskData, id: existingTask.id });
+      if (currentTask) {
+        await updateTask({ ...taskData, id: currentTask.id });
         success(t("tasks.taskUpdated"), t("tasks.taskUpdatedDesc", { title }));
+        onSuccess?.();
       } else {
-        await createTask(taskData);
-        success(t("tasks.taskCreated"), t("tasks.taskCreatedDesc", { title }));
-      }
+        const createdTask = await createTask(taskData);
+        setCurrentTask(createdTask as Task);
 
-      onSuccess?.();
+        // Create subtasks if any were added before task was saved
+        if (subtasks.length > 0) {
+          for (const subtask of subtasks) {
+            if (subtask.id.startsWith("temp-")) {
+              try {
+                const createdSubtask = await createSubtask({
+                  taskId: createdTask.id,
+                  title: subtask.title,
+                  isRequired: subtask.is_required,
+                  sortOrder: subtask.sort_order,
+                });
+                // Replace temp ID with real ID
+                setSubtasks((prev) =>
+                  prev.map((st) =>
+                    st.id === subtask.id ? createdSubtask : st
+                  )
+                );
+              } catch (err) {
+                console.error("Failed to create subtask:", err);
+              }
+            }
+          }
+        }
+
+        success(
+          t("tasks.taskCreated"),
+          t("tasks.ai.taskCreatedCanGenerateImage", { title })
+        );
+        // Don't call onSuccess yet - let user generate image first
+      }
     } catch (err: any) {
       console.error("Failed to save task:", err);
       error(
-        existingTask ? t("tasks.failedToUpdate") : t("tasks.failedToCreate"),
+        currentTask ? t("tasks.failedToUpdate") : t("tasks.failedToCreate"),
         err?.message || t("tasks.somethingWentWrong")
       );
     } finally {
@@ -206,8 +325,40 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Basic Information */}
+    <>
+      {/* Image Preview Dialog */}
+      <Dialog open={isImagePreviewOpen} onOpenChange={setIsImagePreviewOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogTitle className="sr-only">{title}</DialogTitle>
+          {aiImageUrl && (
+            <img
+              src={aiImageUrl}
+              alt={title}
+              className="w-full aspect-square object-cover rounded-lg"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Progress Indicator */}
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>{t("tasks.modal.step", { current: currentStep, total: totalSteps })}</span>
+          <span>{Math.round((currentStep / totalSteps) * 100)}%</span>
+        </div>
+        <div className="h-2 bg-accent rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-300"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Step 1: Basic Information */}
+      {currentStep === 1 && (
       <div className="space-y-4">
         <h3 className="text-sm font-medium text-muted-foreground">
           {t("tasks.modal.basicInfo")}
@@ -244,12 +395,18 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
 
           {aiImageUrl ? (
             <div className="space-y-3">
-              <div className="relative rounded-lg overflow-hidden border-2 border-primary/20">
+              <div
+                className="relative rounded-lg overflow-hidden border-2 border-primary/20 w-48 mx-auto cursor-pointer group"
+                onClick={() => setIsImagePreviewOpen(true)}
+              >
                 <img
                   src={aiImageUrl}
                   alt={title}
-                  className="w-full h-48 object-cover"
+                  className="w-full aspect-square object-cover"
                 />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Expand className="h-8 w-8 text-white" />
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -257,7 +414,7 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
                   variant="outline"
                   size="sm"
                   onClick={handleGenerateImage}
-                  disabled={isGeneratingImage || isLoading || !existingTask}
+                  disabled={isGeneratingImage || isLoading || !currentTask}
                   className="flex-1"
                 >
                   {isGeneratingImage ? (
@@ -277,7 +434,7 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
                   variant="outline"
                   size="sm"
                   onClick={handleDeleteImage}
-                  disabled={isGeneratingImage || isLoading || !existingTask}
+                  disabled={isGeneratingImage || isLoading || !currentTask}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -288,7 +445,7 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
               <div className="rounded-lg border-2 border-dashed border-border/50 p-8 text-center">
                 <Sparkles className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
                 <p className="text-sm text-muted-foreground mb-3">
-                  {existingTask
+                  {currentTask
                     ? t("tasks.ai.noImage")
                     : t("tasks.ai.saveFirstToGenerate")}
                 </p>
@@ -297,7 +454,7 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
                   variant="outline"
                   size="sm"
                   onClick={handleGenerateImage}
-                  disabled={isGeneratingImage || isLoading || !title.trim() || !existingTask}
+                  disabled={isGeneratingImage || isLoading || !title.trim() || !currentTask}
                 >
                   {isGeneratingImage ? (
                     <>
@@ -337,10 +494,11 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
           </select>
         </div>
       </div>
+      )}
 
-      <Separator />
-
-      {/* Häufigkeit & Zeitplan */}
+      {/* Step 2: Schedule */}
+      {currentStep === 2 && (
+      <div className="space-y-6">
       <div className="space-y-4">
         <h3 className="text-sm font-medium text-muted-foreground">
           {t("tasks.scheduling.frequencyAndSchedule")}
@@ -485,10 +643,11 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
           </div>
         </div>
       </div>
+      </div>
+      )}
 
-      <Separator />
-
-      {/* Weitere Optionen */}
+      {/* Step 3: Details */}
+      {currentStep === 3 && (
       <div className="space-y-4">
         <h3 className="text-sm font-medium text-muted-foreground">
           {t("tasks.modal.additionalOptions")}
@@ -575,26 +734,150 @@ export function TaskForm({ categories, userId, existingTask, onSuccess, onCancel
           </select>
         </div>
       </div>
+      )}
+
+      {/* Step 4: Subtasks */}
+      {currentStep === 4 && (
+      <div className="space-y-4">
+        <h3 className="text-sm font-medium text-muted-foreground">
+          {t("tasks.subtask.subtasks")}
+        </h3>
+
+        {/* Add new subtask */}
+        <div className="space-y-2">
+          <Label htmlFor="new-subtask">{t("tasks.subtask.addSubtask")}</Label>
+          <div className="flex gap-2">
+            <Input
+              id="new-subtask"
+              value={newSubtaskTitle}
+              onChange={(e) => setNewSubtaskTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddSubtask();
+                }
+              }}
+              placeholder={t("tasks.subtask.placeholder")}
+              disabled={isLoading}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleAddSubtask}
+              disabled={isLoading || !newSubtaskTitle.trim()}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+          {!currentTask && subtasks.length > 0 && (
+            <p className="text-xs text-muted-foreground">
+              {t("tasks.subtask.saveTaskFirst")}
+            </p>
+          )}
+        </div>
+
+        {/* Subtask list */}
+        {subtasks.length > 0 && (
+          <div className="space-y-2">
+            <Label>{t("tasks.subtask.subtaskList")}</Label>
+            <div className="space-y-2 p-3 rounded-lg border border-border/50 bg-accent/5">
+              {subtasks.map((subtask, index) => (
+                <div
+                  key={subtask.id}
+                  className="flex items-center gap-2 p-2 rounded hover:bg-accent/10 transition-colors"
+                >
+                  <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                  <span className="flex-1 text-sm">{subtask.title}</span>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id={`required-${subtask.id}`}
+                      checked={subtask.is_required}
+                      onCheckedChange={(checked) =>
+                        handleToggleSubtaskRequired(subtask.id, index, !!checked)
+                      }
+                      disabled={isLoading}
+                    />
+                    <label
+                      htmlFor={`required-${subtask.id}`}
+                      className="text-xs text-muted-foreground cursor-pointer"
+                    >
+                      {t("tasks.subtask.required")}
+                    </label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteSubtask(subtask.id, index)}
+                      disabled={isLoading}
+                      className="h-8 w-8"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t("tasks.subtask.requiredInfo")}
+            </p>
+          </div>
+        )}
+      </div>
+      )}
 
       <Separator />
 
       {/* Form Actions */}
       <div className="flex gap-3">
-        {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading} className="flex-1">
-            {t("common.cancel")}
+        {/* Back / Cancel Button */}
+        {currentStep === 1 ? (
+          onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isLoading}
+              className="flex-1"
+            >
+              {t("common.cancel")}
+            </Button>
+          )
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setCurrentStep(currentStep - 1)}
+            disabled={isLoading}
+            className="flex-1"
+          >
+            {t("common.back")}
           </Button>
         )}
-        <Button type="submit" disabled={isLoading} className="flex-1">
-          {isLoading
-            ? existingTask
-              ? t("tasks.updating")
-              : t("tasks.creating")
-            : existingTask
-            ? t("common.update")
-            : t("tasks.createTask")}
-        </Button>
+
+        {/* Next / Submit Button */}
+        {currentStep < totalSteps ? (
+          <Button
+            type="button"
+            onClick={() => setCurrentStep(currentStep + 1)}
+            disabled={isLoading}
+            className="flex-1"
+          >
+            {t("common.next")}
+          </Button>
+        ) : (
+          <Button type="submit" disabled={isLoading} className="flex-1">
+            {isLoading
+              ? currentTask
+                ? t("tasks.updating")
+                : t("tasks.creating")
+              : currentTask
+              ? t("common.update")
+              : t("tasks.createTask")}
+          </Button>
+        )}
       </div>
     </form>
+    </>
   );
 }
